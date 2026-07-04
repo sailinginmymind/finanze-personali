@@ -1,19 +1,32 @@
 @import "tailwindcss";
 
+:root {
+  --bg-primary: #0a0c10;
+  --bg-secondary: #13161f;
+  --bg-sidebar: #0d1017;
+  --text-primary: #e8eaed;
+  --text-secondary: #8b9098;
+  --accent: #d4942b;
+  --accent-hover: #e3ac4e;
+  --success: #2e9e7b;
+  --danger: #c4554d;
+  --border: rgba(255, 255, 255, 0.06);
+}
+
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
+  /* NESSUN PADDING QUI – lo sfondo va a tutto schermo */
 }
 
-.safe-bottom {
-  padding-bottom: env(safe-area-inset-bottom);
-}
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+.safe-left { padding-left: env(safe-area-inset-left); }
+.safe-right { padding-right: env(safe-area-inset-right); }
 
 @keyframes zoom-in {
   from { transform: scale(0.95); opacity: 0; }
   to { transform: scale(1); opacity: 1; }
 }
-.animate-zoom-in {
-  animation: zoom-in 0.2s ease-out;
-}
+.animate-zoom-in { animation: zoom-in 0.2s ease-out; }
