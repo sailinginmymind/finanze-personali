@@ -97,40 +97,57 @@ export default function Dashboard() {
 
   return (
     <section className="space-y-5">
-      <div className="relative overflow-hidden bg-gradient-to-br from-[#111827] to-[#0a0f1a] border border-white/10 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xl">
-        <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-gradient-to-bl from-amber-500/10 via-transparent to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-        <div className="relative z-10">
-          <p className="text-xs sm:text-sm text-slate-400 font-medium">Saldo {monthFilter !== 'all' ? 'del mese' : 'totale'}</p>
-          <p className={`text-3xl sm:text-4xl font-bold mt-1 tracking-tight ${stats.balance >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-            {formatCurrency(stats.balance)}
-          </p>
-          <div className="flex gap-4 mt-4">
-            <div>
-              <div className="flex items-center gap-1 text-xs text-slate-500">
-                <span>Entrate</span>
-                {stats.incomeTrend !== null && (
-                  <span className={`ml-1 font-medium ${stats.incomeTrend >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                    {stats.incomeTrend >= 0 ? '+' : ''}{stats.incomeTrend.toFixed(1)}%
-                  </span>
-                )}
+      {/* 👇 Nuova Hero Card – ridisegnata */}
+      <div className="bg-[#0d1321] border border-white/5 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-xl">
+        <p className="text-sm sm:text-base font-medium text-slate-300 mb-4">
+          Saldo {monthFilter !== 'all' ? 'del mese' : 'totale'}
+        </p>
+        <p className={`text-4xl sm:text-5xl font-bold tracking-tight mb-6 ${stats.balance >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+          {formatCurrency(stats.balance)}
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Card Entrate */}
+          <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 border border-emerald-500/20 rounded-xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center text-lg shrink-0">💰</div>
+              <div>
+                <p className="text-xs text-slate-400">Entrate</p>
+                <p className="text-lg font-bold text-emerald-400">{formatCurrency(stats.income)}</p>
               </div>
-              <p className="text-base sm:text-lg font-semibold text-emerald-400">{formatCurrency(stats.income)}</p>
             </div>
-            <div>
-              <div className="flex items-center gap-1 text-xs text-slate-500">
-                <span>Spese</span>
-                {stats.expenseTrend !== null && (
-                  <span className={`ml-1 font-medium ${stats.expenseTrend <= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
-                    {stats.expenseTrend >= 0 ? '+' : ''}{stats.expenseTrend.toFixed(1)}%
-                  </span>
-                )}
+            {stats.incomeTrend !== null && (
+              <div className={`flex items-center gap-1 text-xs font-medium ${stats.incomeTrend >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3">
+                  <path strokeLinecap="round" strokeLinejoin="round" d={stats.incomeTrend >= 0 ? "M4.5 15.75l7.5-7.5 7.5 7.5" : "M19.5 8.25l-7.5 7.5-7.5-7.5"} />
+                </svg>
+                {stats.incomeTrend >= 0 ? '+' : ''}{stats.incomeTrend.toFixed(1)}%
               </div>
-              <p className="text-base sm:text-lg font-semibold text-rose-400">{formatCurrency(stats.expense)}</p>
+            )}
+          </div>
+
+          {/* Card Spese */}
+          <div className="bg-gradient-to-br from-rose-500/10 to-rose-500/5 border border-rose-500/20 rounded-xl p-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-rose-500/20 flex items-center justify-center text-lg shrink-0">💸</div>
+              <div>
+                <p className="text-xs text-slate-400">Spese</p>
+                <p className="text-lg font-bold text-rose-400">{formatCurrency(stats.expense)}</p>
+              </div>
             </div>
+            {stats.expenseTrend !== null && (
+              <div className={`flex items-center gap-1 text-xs font-medium ${stats.expenseTrend <= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3">
+                  <path strokeLinecap="round" strokeLinejoin="round" d={stats.expenseTrend <= 0 ? "M4.5 15.75l7.5-7.5 7.5 7.5" : "M19.5 8.25l-7.5 7.5-7.5-7.5"} />
+                </svg>
+                {stats.expenseTrend >= 0 ? '+' : ''}{stats.expenseTrend.toFixed(1)}%
+              </div>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Andamento mensile / giornaliero */}
       <div className="bg-[#0d1321] border border-white/5 rounded-2xl p-4 sm:p-5 shadow-lg">
         <h2 className="text-sm sm:text-base font-semibold mb-4">
           {monthFilter === 'all' ? 'Andamento mensile' : 'Andamento giornaliero'}
@@ -188,6 +205,7 @@ export default function Dashboard() {
         )}
       </div>
 
+      {/* Barre per categoria (invariate) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <div className="bg-[#0d1321] border border-white/5 rounded-2xl p-4 sm:p-5 shadow-lg">
           <h2 className="text-sm sm:text-base font-semibold mb-3 flex items-center gap-2">
