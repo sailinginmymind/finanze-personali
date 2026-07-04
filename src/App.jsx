@@ -61,7 +61,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans flex flex-col md:flex-row">
+    <div className="h-full bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans flex flex-col md:flex-row">
       <Sidebar onSeed={handleSeed} />
 
       <main className="flex-1 overflow-y-auto pb-20 md:pb-0 md:ml-64 safe-top">

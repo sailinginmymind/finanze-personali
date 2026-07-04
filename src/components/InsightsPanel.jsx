@@ -13,20 +13,15 @@ export default function InsightsPanel() {
   const maskPercent = (val) => isPrivacyEnabled ? '***' : `${val >= 0 ? '+' : ''}${val.toFixed(1)}%`
 
   const insights = useMemo(() => {
-    if (monthFilter === 'all') {
-      // Con "Tutti i mesi" mostriamo il trend complessivo anno-su-anno? Meglio non complicare, restituiamo null.
-      return null
-    }
+    if (monthFilter === 'all') return null
 
     const [year, month] = monthFilter.split('-').map(Number)
     const daysInMonth = new Date(year, month, 0).getDate()
 
-    // Transazioni del mese corrente
     const monthIncome = filteredTransactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
     const monthExpense = filteredTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
     const balance = monthIncome - monthExpense
 
-    // Mese precedente
     const prevDate = new Date(year, month - 2, 1)
     const prevMonthStr = `${prevDate.getFullYear()}-${String(prevDate.getMonth() + 1).padStart(2, '0')}`
     const prevIncome = transactions.filter(t => t.type === 'income' && t.date.startsWith(prevMonthStr)).reduce((s, t) => s + t.amount, 0)
@@ -37,7 +32,6 @@ export default function InsightsPanel() {
     const expenseTrend = prevExpense ? ((monthExpense - prevExpense) / prevExpense * 100) : null
     const balanceTrend = prevBalance ? ((balance - prevBalance) / Math.abs(prevBalance) * 100) : null
 
-    // Giorno con più spese
     const dailyExpenses = {}
     filteredTransactions.filter(t => t.type === 'expense').forEach(t => {
       const day = t.date.slice(-2)
@@ -46,10 +40,8 @@ export default function InsightsPanel() {
     const maxDay = Object.entries(dailyExpenses).sort((a, b) => b[1] - a[1])[0]
     const maxDayLabel = maxDay ? `${maxDay[0]} ${new Date(year, month - 1, parseInt(maxDay[0])).toLocaleDateString('it-IT', { weekday: 'short' })}` : null
 
-    // Media giornaliera di spesa
     const avgDailyExpense = daysInMonth > 0 ? monthExpense / daysInMonth : 0
 
-    // Categoria più impattante
     const topExpenseCat = categories.expense
       .map(cat => ({
         name: cat.name,
@@ -80,7 +72,7 @@ export default function InsightsPanel() {
         Insight del mese
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {/* Trend entrate */}
         <div className="flex items-center justify-between p-3 rounded-xl bg-white/5">
           <div className="flex items-center gap-2">

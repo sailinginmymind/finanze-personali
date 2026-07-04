@@ -1,9 +1,10 @@
 import { useMemo, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useTransactions } from '../context/TransactionContext'
 import { useCategories } from '../context/CategoriesContext'
 import { useBudgets } from '../context/BudgetContext'
 import { usePrivacy } from '../context/PrivacyContext'
-import { formatCurrency, maskCurrency } from '../utils/format'
+import { formatCurrency, maskCurrency, formatNumber, maskNumber } from '../utils/format'
 import InsightsPanel from './InsightsPanel'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
@@ -49,14 +50,13 @@ export default function Dashboard() {
   const [activeTab, setActiveTab] = useState('expense')
 
   const fmt = isPrivacyEnabled ? maskCurrency : formatCurrency
+  const fmtNumber = isPrivacyEnabled ? maskNumber : formatNumber
 
   const stats = useMemo(() => {
     const income = filteredTransactions.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0)
     const expense = filteredTransactions.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0)
     const balance = income - expense
 
-    // I trend non servono più qui, ma li calcoliamo ancora per altri usi? 
-    // Non più necessari nella Hero Card, ma possiamo lasciarli nel calcolo per eventuali altri componenti.
     let prevMonthIncome = 0, prevMonthExpense = 0
     if (monthFilter !== 'all') {
       const [year, month] = monthFilter.split('-').map(Number)
@@ -104,28 +104,18 @@ export default function Dashboard() {
       return months
     })()
 
-    const dailyTrend = (() => {
-      if (monthFilter === 'all') return null
-      const [year, month] = monthFilter.split('-').map(Number)
-      const daysInMonth = new Date(year, month, 0).getDate()
-      const daily = []
-      for (let day = 1; day <= daysInMonth; day++) {
-        const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
-        const dayIncome = transactions.filter(t => t.type === 'income' && t.date === dateStr).reduce((s, t) => s + t.amount, 0)
-        const dayExpense = transactions.filter(t => t.type === 'expense' && t.date === dateStr).reduce((s, t) => s + t.amount, 0)
-        daily.push({ day: String(day), income: dayIncome, expense: dayExpense })
-      }
-      return daily
-    })()
+    const recentTransactions = [...transactions]
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 5)
 
-    return { income, expense, balance, incomeTrend, expenseTrend, expenseByCategory, incomeByCategory, monthlyTrend, dailyTrend }
+    return { income, expense, balance, incomeTrend, expenseTrend, expenseByCategory, incomeByCategory, monthlyTrend, recentTransactions }
   }, [filteredTransactions, transactions, monthFilter, categories])
 
   const currentData = activeTab === 'expense' ? stats.expenseByCategory : stats.incomeByCategory
 
   return (
     <section className="space-y-5">
-      {/* Hero Card – con occhio privacy a destra, senza trend */}
+      {/* Hero Card – con occhio privacy a destra */}
       <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-lg">
         <div className="flex items-center justify-between mb-2">
           <p className="text-sm font-medium text-[var(--text-secondary)]">
@@ -161,13 +151,16 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Andamento */}
-      <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-lg">
-        <h2 className="text-sm font-semibold mb-4 text-[var(--text-primary)]">
-          {monthFilter === 'all' ? 'Andamento mensile (ultimi 6 mesi)' : 'Andamento giornaliero'}
-        </h2>
-        {monthFilter === 'all' ? (
-          stats.monthlyTrend.length === 0 ? <p className="text-[var(--text-secondary)] text-center py-8 text-sm">Dati insufficienti</p> : (
+      {/* Insight del mese (subito sotto la card saldo) */}
+      {monthFilter !== 'all' && <InsightsPanel />}
+
+      {/* Andamento mensile (solo se "Tutti i mesi") oppure Ultime transazioni */}
+      {monthFilter === 'all' ? (
+        <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-lg">
+          <h2 className="text-sm font-semibold mb-4 text-[var(--text-primary)]">Andamento mensile (ultimi 6 mesi)</h2>
+          {stats.monthlyTrend.length === 0 ? (
+            <p className="text-[var(--text-secondary)] text-center py-8 text-sm">Dati insufficienti</p>
+          ) : (
             <ResponsiveContainer width="100%" height={220}>
               <LineChart data={stats.monthlyTrend} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
@@ -179,26 +172,51 @@ export default function Dashboard() {
                 <Line type="monotone" dataKey="expense" name="Spese" stroke="var(--danger)" strokeWidth={2} dot={{ r: 4, fill: 'var(--danger)' }} isAnimationActive={false} />
               </LineChart>
             </ResponsiveContainer>
-          )
-        ) : (
-          stats.dailyTrend && stats.dailyTrend.length === 0 ? <p className="text-[var(--text-secondary)] text-center py-8 text-sm">Nessun dato per questo mese</p> : (
-            <ResponsiveContainer width="100%" height={220}>
-              <BarChart data={stats.dailyTrend} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="day" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <Tooltip formatter={(value) => fmt(value)} contentStyle={{ background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '0.875rem' }} />
-                <Legend wrapperStyle={{ fontSize: '12px' }} />
-                <Bar dataKey="income" name="Entrate" fill="var(--success)" radius={[4,4,0,0]} isAnimationActive={false} />
-                <Bar dataKey="expense" name="Spese" fill="var(--danger)" radius={[4,4,0,0]} isAnimationActive={false} />
-              </BarChart>
-            </ResponsiveContainer>
-          )
-        )}
-      </div>
-
-      {/* Insight del mese (solo se mese selezionato) */}
-      {monthFilter !== 'all' && <InsightsPanel />}
+          )}
+        </div>
+      ) : (
+        <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-lg">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)]">Ultime transazioni</h2>
+            <Link
+              to="/transactions"
+              className="text-xs font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
+            >
+              Vedi tutte →
+            </Link>
+          </div>
+          {stats.recentTransactions.length === 0 ? (
+            <p className="text-[var(--text-secondary)] text-center py-4 text-sm">Nessuna transazione recente</p>
+          ) : (
+            <div className="space-y-2">
+              {stats.recentTransactions.map(t => {
+                const catList = categories[t.type] || []
+                const cat = catList.find(c => c.name === t.category)
+                const emoji = cat?.emoji || (t.type === 'expense' ? '📌' : '💰')
+                const color = cat?.color || '#64748B'
+                return (
+                  <div key={t.id} className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-white/5 transition-colors">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0" style={{ backgroundColor: `${color}20` }}>
+                        <span>{emoji}</span>
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium text-[var(--text-primary)] truncate">{t.note || t.category}</p>
+                        <p className="text-[10px] text-[var(--text-secondary)]">
+                          {new Date(t.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })} · {t.category}
+                        </p>
+                      </div>
+                    </div>
+                    <span className={`text-sm font-semibold ml-2 ${t.type === 'expense' ? 'text-[var(--danger)]' : 'text-[var(--success)]'}`}>
+                      {t.type === 'expense' ? '-' : '+'} €{fmtNumber(t.amount)}
+                    </span>
+                  </div>
+                )
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Tab: Spese / Entrate con budget */}
       <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-lg">

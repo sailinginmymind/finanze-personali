@@ -13,22 +13,23 @@
   --border: rgba(255, 255, 255, 0.06);
 }
 
+/* 👇 Queste due regole sono la chiave per Brave */
 html, body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  background-color: var(--bg-primary);
+  height: 100%;               /* altezza fissa per tutta la catena */
+  overflow: hidden;           /* evita il doppio scroll */
 }
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior: none;
+  background-color: var(--bg-primary);
 }
 
 #root {
-  min-height: 100vh;
-  min-height: 100dvh;
+  height: 100%;               /* prende il 100% di body */
   display: flex;
   flex-direction: column;
 }
