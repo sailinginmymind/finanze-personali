@@ -13,11 +13,24 @@
   --border: rgba(255, 255, 255, 0.06);
 }
 
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   -webkit-tap-highlight-color: transparent;
-  overscroll-behavior: none;
-  /* NESSUN PADDING QUI – lo sfondo va a tutto schermo */
+  overscroll-behavior: none;  /* attenua il bounce su iOS */
+  background-color: var(--bg-primary);
+}
+
+#root {
+  min-height: 100vh;       /* desktop: 100% viewport */
+  min-height: 100dvh;      /* mobile: altezza dinamica (notch, barre) */
+  display: flex;
+  flex-direction: column;
 }
 
 .safe-top { padding-top: env(safe-area-inset-top); }
