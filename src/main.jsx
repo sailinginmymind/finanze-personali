@@ -10,8 +10,8 @@ import { PrivacyProvider } from './context/PrivacyContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter basename="/finanze-personali">
-      <PrivacyProvider>
+<BrowserRouter basename="/finanze-personali/">
+<PrivacyProvider>
         <BudgetProvider>
           <CategoriesProvider>
             <TransactionProvider>
