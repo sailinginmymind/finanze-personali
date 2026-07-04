@@ -5,7 +5,7 @@ export default function Sidebar({ onSeed }) {
     <aside className="hidden md:flex flex-col w-64 fixed h-full bg-[#0a0f1a] border-r border-white/5 p-4">
       <div className="flex items-center gap-3 mb-8">
         <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400 to-amber-600 flex items-center justify-center text-[#060b14] text-xl font-bold shadow-lg shadow-amber-500/20">F</div>
-        <h1 className="text-lg font-semibold">Finanze</h1>
+        <h1 className="text-lg font-semibold">Fin.Io</h1>
       </div>
       <nav className="flex-1 space-y-2">
         <NavLink to="/" end className={({isActive}) => `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${isActive ? 'bg-amber-500/10 text-amber-300' : 'text-slate-400 hover:bg-white/5 hover:text-white'}`}>

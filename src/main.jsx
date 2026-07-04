@@ -8,7 +8,7 @@ import { CategoriesProvider } from './context/CategoriesContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/finanze-personali">   {/* <-- aggiunto */}
       <CategoriesProvider>
         <TransactionProvider>
           <App />

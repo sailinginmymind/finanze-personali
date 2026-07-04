@@ -63,6 +63,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-[#060b14] text-slate-100 font-sans flex flex-col md:flex-row safe-bottom">
       <Sidebar onSeed={handleSeed} />
+
       <main className="flex-1 pb-20 md:pb-0 md:ml-64">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">
           <Suspense fallback={<PageFallback />}>
@@ -74,7 +75,19 @@ export default function App() {
           </Suspense>
         </div>
       </main>
+
+      {/* Bottom nav mobile (contiene già il pulsante “+” nel FAB centrale) */}
       <BottomNav onAdd={() => setShowForm(true)} />
+
+      {/* Pulsante “+” flottante su desktop (nascosto su mobile perché già nella BottomNav) */}
+      <button
+        onClick={() => setShowForm(true)}
+        className="hidden md:flex fixed bottom-8 right-8 z-40 w-14 h-14 bg-gradient-to-r from-amber-500 to-amber-600 rounded-2xl items-center justify-center text-[#060b14] text-2xl shadow-lg shadow-amber-500/30 hover:scale-105 active:scale-95 transition-transform"
+        aria-label="Aggiungi transazione"
+      >
+        +
+      </button>
+
       {showForm && <TransactionForm onClose={() => setShowForm(false)} />}
     </div>
   )

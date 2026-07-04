@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useTransactions } from '../context/TransactionContext'
 import { useCategories } from '../context/CategoriesContext'
+import { formatCurrency, formatNumber } from '../utils/format'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   LineChart, Line, Legend, ResponsiveContainer, Cell
@@ -14,7 +15,7 @@ const CustomBarTooltip = ({ active, payload, label }) => {
         <p className="text-white font-medium flex items-center gap-2">
           <span className="text-lg">{data.emoji}</span> {data.name}
         </p>
-        <p className="text-slate-300 mt-1">€ {data.value.toFixed(2)}</p>
+        <p className="text-slate-300 mt-1">{formatCurrency(data.value)}</p>
       </div>
     )
   }
@@ -100,36 +101,59 @@ export default function Dashboard() {
         <div className="absolute top-0 right-0 w-48 sm:w-64 h-48 sm:h-64 bg-gradient-to-bl from-amber-500/10 via-transparent to-transparent rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
         <div className="relative z-10">
           <p className="text-xs sm:text-sm text-slate-400 font-medium">Saldo {monthFilter !== 'all' ? 'del mese' : 'totale'}</p>
-          <p className={`text-3xl sm:text-4xl font-bold mt-1 tracking-tight ${stats.balance >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>€ {stats.balance.toFixed(2)}</p>
+          <p className={`text-3xl sm:text-4xl font-bold mt-1 tracking-tight ${stats.balance >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+            {formatCurrency(stats.balance)}
+          </p>
           <div className="flex gap-4 mt-4">
             <div>
               <div className="flex items-center gap-1 text-xs text-slate-500">
                 <span>Entrate</span>
-                {stats.incomeTrend !== null && <span className={`ml-1 font-medium ${stats.incomeTrend >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>{stats.incomeTrend >= 0 ? '+' : ''}{stats.incomeTrend.toFixed(1)}%</span>}
+                {stats.incomeTrend !== null && (
+                  <span className={`ml-1 font-medium ${stats.incomeTrend >= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {stats.incomeTrend >= 0 ? '+' : ''}{stats.incomeTrend.toFixed(1)}%
+                  </span>
+                )}
               </div>
-              <p className="text-base sm:text-lg font-semibold text-emerald-400">€ {stats.income.toFixed(2)}</p>
+              <p className="text-base sm:text-lg font-semibold text-emerald-400">{formatCurrency(stats.income)}</p>
             </div>
             <div>
               <div className="flex items-center gap-1 text-xs text-slate-500">
                 <span>Spese</span>
-                {stats.expenseTrend !== null && <span className={`ml-1 font-medium ${stats.expenseTrend <= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>{stats.expenseTrend >= 0 ? '+' : ''}{stats.expenseTrend.toFixed(1)}%</span>}
+                {stats.expenseTrend !== null && (
+                  <span className={`ml-1 font-medium ${stats.expenseTrend <= 0 ? 'text-emerald-400' : 'text-rose-400'}`}>
+                    {stats.expenseTrend >= 0 ? '+' : ''}{stats.expenseTrend.toFixed(1)}%
+                  </span>
+                )}
               </div>
-              <p className="text-base sm:text-lg font-semibold text-rose-400">€ {stats.expense.toFixed(2)}</p>
+              <p className="text-base sm:text-lg font-semibold text-rose-400">{formatCurrency(stats.expense)}</p>
             </div>
           </div>
         </div>
       </div>
 
       <div className="bg-[#0d1321] border border-white/5 rounded-2xl p-4 sm:p-5 shadow-lg">
-        <h2 className="text-sm sm:text-base font-semibold mb-4">{monthFilter === 'all' ? 'Andamento mensile' : 'Andamento giornaliero'}</h2>
+        <h2 className="text-sm sm:text-base font-semibold mb-4">
+          {monthFilter === 'all' ? 'Andamento mensile' : 'Andamento giornaliero'}
+        </h2>
         {monthFilter === 'all' ? (
-          stats.monthlyTrend.length === 0 ? <p className="text-slate-600 text-center py-8 text-sm">Dati insufficienti</p> : (
+          stats.monthlyTrend.length === 0 ? (
+            <p className="text-slate-600 text-center py-8 text-sm">Dati insufficienti</p>
+          ) : (
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={stats.monthlyTrend} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                 <XAxis dataKey="label" tick={{ fill: '#94a3b8', fontSize: 12 }} />
                 <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                <Tooltip formatter={(value) => `€ ${value.toFixed(2)}`} contentStyle={{ background: '#1a1f2e', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '0.875rem' }} />
+                <Tooltip
+                  formatter={(value) => formatCurrency(value)}
+                  contentStyle={{
+                    background: '#1a1f2e',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(255,255,255,0.05)',
+                    boxShadow: '0 10px 25px -5px rgba(0,0,0,0.3)',
+                    fontSize: '0.875rem'
+                  }}
+                />
                 <Legend wrapperStyle={{ fontSize: '12px' }} />
                 <Line type="monotone" dataKey="income" name="Entrate" stroke="#10b981" strokeWidth={2} dot={{ r: 4, fill: '#10b981' }} isAnimationActive={false} />
                 <Line type="monotone" dataKey="expense" name="Spese" stroke="#ef4444" strokeWidth={2} dot={{ r: 4, fill: '#ef4444' }} isAnimationActive={false} />
@@ -137,16 +161,27 @@ export default function Dashboard() {
             </ResponsiveContainer>
           )
         ) : (
-          stats.dailyTrend && stats.dailyTrend.length === 0 ? <p className="text-slate-600 text-center py-8 text-sm">Nessun dato per questo mese</p> : (
+          stats.dailyTrend && stats.dailyTrend.length === 0 ? (
+            <p className="text-slate-600 text-center py-8 text-sm">Nessun dato per questo mese</p>
+          ) : (
             <ResponsiveContainer width="100%" height={250}>
               <BarChart data={stats.dailyTrend} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
                 <XAxis dataKey="day" tick={{ fill: '#94a3b8', fontSize: 12 }} />
                 <YAxis tick={{ fill: '#94a3b8', fontSize: 12 }} />
-                <Tooltip formatter={(value) => `€ ${value.toFixed(2)}`} contentStyle={{ background: '#1a1f2e', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)', fontSize: '0.875rem' }} />
+                <Tooltip
+                  formatter={(value) => formatCurrency(value)}
+                  contentStyle={{
+                    background: '#1a1f2e',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(255,255,255,0.05)',
+                    boxShadow: '0 10px 25px -5px rgba(0,0,0,0.3)',
+                    fontSize: '0.875rem'
+                  }}
+                />
                 <Legend wrapperStyle={{ fontSize: '12px' }} />
-                <Bar dataKey="income" name="Entrate" fill="#10b981" radius={[4,4,0,0]} isAnimationActive={false} />
-                <Bar dataKey="expense" name="Spese" fill="#ef4444" radius={[4,4,0,0]} isAnimationActive={false} />
+                <Bar dataKey="income" name="Entrate" fill="#10b981" radius={[4, 4, 0, 0]} isAnimationActive={false} />
+                <Bar dataKey="expense" name="Spese" fill="#ef4444" radius={[4, 4, 0, 0]} isAnimationActive={false} />
               </BarChart>
             </ResponsiveContainer>
           )
@@ -155,8 +190,12 @@ export default function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         <div className="bg-[#0d1321] border border-white/5 rounded-2xl p-4 sm:p-5 shadow-lg">
-          <h2 className="text-sm sm:text-base font-semibold mb-3 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-rose-400" /> Spese per categoria</h2>
-          {stats.expenseByCategory.length === 0 ? <p className="text-slate-600 text-center py-8 text-sm">Nessuna spesa</p> : (
+          <h2 className="text-sm sm:text-base font-semibold mb-3 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-rose-400" /> Spese per categoria
+          </h2>
+          {stats.expenseByCategory.length === 0 ? (
+            <p className="text-slate-600 text-center py-8 text-sm">Nessuna spesa</p>
+          ) : (
             <ResponsiveContainer width="100%" height={Math.max(stats.expenseByCategory.length * 44, 200)}>
               <BarChart layout="vertical" data={stats.expenseByCategory} margin={{ left: 0, right: 20 }}>
                 <defs>
@@ -171,8 +210,10 @@ export default function Dashboard() {
                 <XAxis type="number" tick={{ fill: '#94a3b8', fontSize: 12 }} />
                 <YAxis dataKey="name" type="category" tick={{ fill: '#e2e8f0', fontSize: 13 }} width={100} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomBarTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
-                <Bar dataKey="value" radius={[0,8,8,0]} isAnimationActive={false} barSize={24}>
-                  {stats.expenseByCategory.map((entry, idx) => (<Cell key={idx} fill={`url(#expenseGrad-${idx})`} />))}
+                <Bar dataKey="value" radius={[0, 8, 8, 0]} isAnimationActive={false} barSize={24}>
+                  {stats.expenseByCategory.map((entry, idx) => (
+                    <Cell key={idx} fill={`url(#expenseGrad-${idx})`} />
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -180,8 +221,12 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-[#0d1321] border border-white/5 rounded-2xl p-4 sm:p-5 shadow-lg">
-          <h2 className="text-sm sm:text-base font-semibold mb-3 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-emerald-400" /> Entrate per categoria</h2>
-          {stats.incomeByCategory.length === 0 ? <p className="text-slate-600 text-center py-8 text-sm">Nessuna entrata</p> : (
+          <h2 className="text-sm sm:text-base font-semibold mb-3 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-emerald-400" /> Entrate per categoria
+          </h2>
+          {stats.incomeByCategory.length === 0 ? (
+            <p className="text-slate-600 text-center py-8 text-sm">Nessuna entrata</p>
+          ) : (
             <ResponsiveContainer width="100%" height={Math.max(stats.incomeByCategory.length * 44, 200)}>
               <BarChart layout="vertical" data={stats.incomeByCategory} margin={{ left: 0, right: 20 }}>
                 <defs>
@@ -196,8 +241,10 @@ export default function Dashboard() {
                 <XAxis type="number" tick={{ fill: '#94a3b8', fontSize: 12 }} />
                 <YAxis dataKey="name" type="category" tick={{ fill: '#e2e8f0', fontSize: 13 }} width={100} axisLine={false} tickLine={false} />
                 <Tooltip content={<CustomBarTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
-                <Bar dataKey="value" radius={[0,8,8,0]} isAnimationActive={false} barSize={24}>
-                  {stats.incomeByCategory.map((entry, idx) => (<Cell key={idx} fill={`url(#incomeGrad-${idx})`} />))}
+                <Bar dataKey="value" radius={[0, 8, 8, 0]} isAnimationActive={false} barSize={24}>
+                  {stats.incomeByCategory.map((entry, idx) => (
+                    <Cell key={idx} fill={`url(#incomeGrad-${idx})`} />
+                  ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
