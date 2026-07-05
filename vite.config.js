@@ -79,43 +79,34 @@ export default defineConfig({
     })
   ],
   
-  // 👇 OTTIMIZZAZIONI PER IL BUNDLING
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
-          // Separa React e React Router in un chunk dedicato
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          
-          // Separa Recharts (la libreria più pesante) in un chunk dedicato
-          'recharts': ['recharts'],
-          
-          // Altre librerie di terze parti
-          'vendor-other': ['uuid']
+        // 👇 manualChunks come FUNZIONE (compatibile con Rolldown)
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            // React e React Router
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router')) {
+              return 'react-vendor'
+            }
+            // Recharts
+            if (id.includes('recharts')) {
+              return 'recharts'
+            }
+            // Altre librerie
+            return 'vendor-other'
+          }
         }
       }
     },
-    // Riduce la dimensione del chunk principale
     chunkSizeWarningLimit: 1000,
-    
-    // Ottimizza il CSS
     cssMinify: true,
-    
-    // Genera sourcemap solo in sviluppo (per ridurre il bundle in produzione)
     sourcemap: false
   },
   
-  // 👇 OTTIMIZZAZIONI PER LO SVILUPPO
   server: {
-    // Riduce il polling per migliorare le performance in dev
     watch: {
       usePolling: false
     }
-  },
-  
-  // 👇 OTTIMIZZAZIONI PER LA PRODUZIONE
-  esbuild: {
-    // Rimuove i console.log in produzione
-    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : []
   }
 })
