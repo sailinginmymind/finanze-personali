@@ -3,6 +3,7 @@ import { useTransactions } from '../context/TransactionContext'
 import { useCategories } from '../context/CategoriesContext'
 import CategoryManager from '../components/CategoryManager'
 import { usePrivacy } from '../context/PrivacyContext'
+import { useTheme } from '../context/ThemeContext'  // 👈 nuovo
 import BudgetManagerModal from '../components/BudgetManagerModal'
 import ExportModal from '../components/ExportModal'
 import FeedbackModal from '../components/FeedbackModal'
@@ -15,6 +16,7 @@ export default function ProfilePage() {
   const [showExportModal, setShowExportModal] = useState(false)
   const [showFeedbackModal, setShowFeedbackModal] = useState(false)
   const { isPrivacyEnabled, togglePrivacy } = usePrivacy()
+  const { theme, toggleTheme } = useTheme()  // 👈 nuovo
 
   const exportJSON = () => {
     const data = { transactions, categories }
@@ -115,7 +117,7 @@ export default function ProfilePage() {
         </svg>
       </div>
 
-      {/* Card 6 – Invia feedback (STILIZZATA e PENULTIMA) */}
+      {/* Card 6 – Invia feedback */}
       <div
         onClick={() => setShowFeedbackModal(true)}
         className="bg-[var(--bg-secondary)] border-2 border-[var(--accent)]/40 rounded-2xl p-4 shadow-lg cursor-pointer hover:bg-[var(--accent)]/5 hover:border-[var(--accent)] transition-colors active:scale-[0.99] flex items-center justify-between"
@@ -143,7 +145,29 @@ export default function ProfilePage() {
         </svg>
       </div>
 
-      {/* Card 8 – Privacy */}
+      {/* Card 8 – Tema (Dark/Light) - NUOVA */}
+      <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 shadow-lg">
+        <div className="flex items-center justify-between">
+          <span className="font-medium text-[var(--text-primary)] text-sm flex items-center gap-3">
+            <span className="w-8 text-center text-base">{theme === 'dark' ? '🌙' : '☀️'}</span>
+            Tema {theme === 'dark' ? 'Scuro' : 'Chiaro'}
+          </span>
+          <button
+            onClick={toggleTheme}
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${
+              theme === 'dark' ? 'bg-[var(--accent)]' : 'bg-[var(--border)]'
+            }`}
+          >
+            <span
+              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                theme === 'dark' ? 'translate-x-6' : 'translate-x-1'
+              }`}
+            />
+          </button>
+        </div>
+      </div>
+
+      {/* Card 9 – Privacy */}
       <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 shadow-lg">
         <div className="flex items-center justify-between mb-2">
           <span className="font-medium text-[var(--text-primary)] text-sm flex items-center gap-3">

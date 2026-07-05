@@ -1,5 +1,6 @@
 @import "tailwindcss";
 
+/* === VARIABILI DARK MODE (default) === */
 :root {
   --bg-primary: #0a0c10;
   --bg-secondary: #13161f;
@@ -8,11 +9,34 @@
   --text-secondary: #8b9098;
   --accent: #d4942b;
   --accent-hover: #e3ac4e;
+  --accent-light: rgba(212, 148, 43, 0.15);
   --success: #2e9e7b;
   --danger: #c4554d;
   --border: rgba(255, 255, 255, 0.06);
+  --shadow: rgba(0, 0, 0, 0.4);
+  --shadow-sm: rgba(0, 0, 0, 0.2);
+  --card-bg: rgba(255, 255, 255, 0.03);
 }
 
+/* === VARIABILI LIGHT MODE (raffinata) === */
+[data-theme="light"] {
+  --bg-primary: #f4f6f9;
+  --bg-secondary: #ffffff;
+  --bg-sidebar: #eef0f3;
+  --text-primary: #1a1d23;
+  --text-secondary: #6b7280;
+  --accent: #c4852a;
+  --accent-hover: #d4942b;
+  --accent-light: rgba(196, 133, 42, 0.12);
+  --success: #2e9e7b;
+  --danger: #c4554d;
+  --border: rgba(0, 0, 0, 0.06);
+  --shadow: rgba(0, 0, 0, 0.06);
+  --shadow-sm: rgba(0, 0, 0, 0.03);
+  --card-bg: rgba(0, 0, 0, 0.02);
+}
+
+/* === RESET BASE === */
 html,
 body {
   margin: 0;
@@ -21,19 +45,83 @@ body {
   overflow: hidden;
   background-color: var(--bg-primary);
   touch-action: manipulation;
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
 #root {
   display: flex;
   flex-direction: column;
-  height: 100vh; /* fallback iOS < 15.4 */
+  height: 100vh;
   height: 100dvh;
   width: 100%;
   overflow: hidden;
   background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* 👇 FIX PER LA STRISCIA SOTTO LA NAV (iOS PWA) */
+/* === TRANSIZIONI PER TUTTI GLI ELEMENTI === */
+* {
+  transition: background-color 0.3s ease, 
+              border-color 0.3s ease, 
+              color 0.3s ease,
+              box-shadow 0.3s ease,
+              opacity 0.3s ease;
+}
+
+/* === STYLE PER CARD E SHADOW (migliorati) === */
+.bg-\[var\(--bg-secondary\)\] {
+  background-color: var(--bg-secondary);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Shadow più morbidi in light mode */
+.shadow-lg {
+  box-shadow: 0 8px 30px var(--shadow);
+}
+
+.shadow-xl {
+  box-shadow: 0 12px 40px var(--shadow);
+}
+
+/* === BORDI E INPUT (più sottili in light mode) === */
+.border-\[var\(--border\)\] {
+  border-color: var(--border);
+}
+
+/* Migliora la visibilità degli input in light mode */
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  background-color: var(--bg-primary);
+  border-color: var(--border);
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-light);
+}
+
+/* === MIGLIORAMENTO PER IL TEMA CHIARO === */
+[data-theme="light"] .bg-white\/5 {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+[data-theme="light"] .hover\:bg-white\/5:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .bg-white\/10 {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="light"] .hover\:bg-white\/10:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+
+/* === FIX PER LA STRISCIA SOTTO LA NAV (iOS PWA) === */
 @media (max-width: 767px) {
   body::after {
     content: '';
@@ -43,8 +131,9 @@ body {
     right: 0;
     height: env(safe-area-inset-bottom, 0px);
     background-color: var(--bg-secondary);
-    z-index: 49; /* sotto la BottomNav (z-50) */
+    z-index: 49;
     pointer-events: none;
+    transition: background-color 0.4s ease;
   }
 }
 
@@ -53,3 +142,24 @@ body {
 .safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
 .safe-left { padding-left: env(safe-area-inset-left); }
 .safe-right { padding-right: env(safe-area-inset-right); }
+
+/* Animazione zoom per i modali */
+@keyframes zoomIn {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-zoom-in {
+  animation: zoomIn 0.2s ease-out;
+}
+
+/* Versione light del gradiente per il logo */
+[data-theme="light"] .bg-gradient-to-br.from-\[var\(--accent\)\] {
+  background-image: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  opacity: 0.9;
+}
