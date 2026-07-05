@@ -21,6 +21,7 @@ body,
   padding: 0;
   height: 100dvh;
   overflow: hidden;
+  background-color: var(--bg-primary);
 }
 
 body {
