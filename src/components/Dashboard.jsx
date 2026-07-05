@@ -6,6 +6,8 @@ import { useBudgets } from '../context/BudgetContext'
 import { usePrivacy } from '../context/PrivacyContext'
 import { formatCurrency, maskCurrency, formatNumber, maskNumber } from '../utils/format'
 import InsightsPanel from './InsightsPanel'
+import MonthlyProjection from './MonthlyProjection'
+import SavingsGoals from './SavingsGoals'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell
@@ -173,6 +175,12 @@ export default function Dashboard() {
 
       {/* Insights: SEMPRE visibili (sia per mese che per anno) */}
       <InsightsPanel isYearly={monthFilter === 'all'} />
+
+      {/* Previsione fine mese (solo mese corrente e se non è "Tutto l'anno") */}
+      {monthFilter !== 'all' && <MonthlyProjection />}
+
+      {/* Obiettivi di risparmio (sempre visibili) */}
+      <SavingsGoals />
 
       {/* Se "Tutto l'anno" mostra le ultime transazioni, altrimenti le ultime transazioni del mese */}
       {monthFilter === 'all' ? (
