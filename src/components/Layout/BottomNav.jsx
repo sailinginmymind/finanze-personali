@@ -5,17 +5,15 @@ export default function BottomNav({ onAdd }) {
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[var(--bg-secondary)] border-t border-[var(--border)]"
       style={{
-        bottom: 'calc(-1 * env(safe-area-inset-bottom, 0px))',
-        paddingBottom: 'env(safe-area-inset-bottom, 0px)',
-        height: 'calc(64px + env(safe-area-inset-bottom, 0px))'
+        padding: '6px env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)'
       }}
     >
-      <div className="flex justify-evenly items-center px-2 h-16">
+      <div className="flex justify-around items-center">
         {/* Dashboard */}
         <NavLink
           to="/"
           className={({ isActive }) =>
-            `flex flex-col items-center justify-center w-16 h-12 transition-colors ${
+            `flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
               isActive ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'
             }`
           }
@@ -30,7 +28,7 @@ export default function BottomNav({ onAdd }) {
         <NavLink
           to="/transactions"
           className={({ isActive }) =>
-            `flex flex-col items-center justify-center w-16 h-12 transition-colors ${
+            `flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
               isActive ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'
             }`
           }
@@ -44,7 +42,7 @@ export default function BottomNav({ onAdd }) {
         {/* Pulsante + */}
         <button
           onClick={onAdd}
-          className="flex items-center justify-center w-16 h-12"
+          className="flex flex-col items-center justify-center flex-1 py-1"
         >
           <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-gradient-to-r from-[var(--accent)] to-[var(--accent-hover)] text-[var(--bg-primary)] shadow-lg active:scale-90 transition-transform">
             <span className="text-2xl font-bold leading-none">+</span>
@@ -55,7 +53,7 @@ export default function BottomNav({ onAdd }) {
         <NavLink
           to="/profile"
           className={({ isActive }) =>
-            `flex flex-col items-center justify-center w-16 h-12 transition-colors ${
+            `flex flex-col items-center justify-center flex-1 py-1 transition-colors ${
               isActive ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'
             }`
           }
