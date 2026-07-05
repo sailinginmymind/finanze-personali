@@ -1,26 +1,22 @@
 import { useState, useMemo } from 'react'
 import { useTransactions } from '../context/TransactionContext'
 import TransactionList from '../components/TransactionList'
-import CategoryManager from '../components/CategoryManager'
 
 export default function TransactionsPage() {
   const { transactions } = useTransactions()
   const [filterType, setFilterType] = useState('all')
   const [search, setSearch] = useState('')
-  const [showCategories, setShowCategories] = useState(false)
-  const [loadedMonths, setLoadedMonths] = useState(1) // Numero di mesi da caricare (parte da 1)
+  const [loadedMonths, setLoadedMonths] = useState(1)
 
-  // Calcola la lista dei mesi unici presenti nelle transazioni (ordinati dal più recente al più vecchio)
   const availableMonths = useMemo(() => {
     const monthsSet = new Set()
     transactions.forEach(t => {
-      const month = t.date.substring(0, 7) // 'YYYY-MM'
+      const month = t.date.substring(0, 7)
       monthsSet.add(month)
     })
-    return Array.from(monthsSet).sort((a, b) => b.localeCompare(a)) // Dal più recente al più vecchio
+    return Array.from(monthsSet).sort((a, b) => b.localeCompare(a))
   }, [transactions])
 
-  // Transazioni filtrate per tipo e ricerca, poi limitate ai mesi caricati
   const filteredByTypeAndSearch = useMemo(() => {
     return transactions.filter(t => {
       if (filterType !== 'all' && t.type !== filterType) return false
@@ -29,7 +25,6 @@ export default function TransactionsPage() {
     })
   }, [transactions, filterType, search])
 
-  // Prendi solo i mesi caricati
   const monthsToShow = availableMonths.slice(0, loadedMonths)
 
   const displayedTransactions = useMemo(() => {
@@ -40,33 +35,21 @@ export default function TransactionsPage() {
     })
   }, [filteredByTypeAndSearch, monthsToShow])
 
-  // Controlla se ci sono altri mesi da caricare
   const hasMoreMonths = loadedMonths < availableMonths.length
+  const hasNoTransactions = displayedTransactions.length === 0
 
-  // Carica il mese successivo
   const loadNextMonth = () => {
     if (hasMoreMonths) {
       setLoadedMonths(prev => prev + 1)
     }
   }
 
-  // Messaggio quando non ci sono transazioni
-  const hasNoTransactions = displayedTransactions.length === 0
-
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-bold text-[var(--text-primary)]">Transazioni</h2>
-        <button
-          onClick={() => setShowCategories(true)}
-          className="text-xs bg-white/5 hover:bg-white/10 text-[var(--text-secondary)] hover:text-[var(--text-primary)] border border-[var(--border)] rounded-full px-3 py-1.5 transition-all"
-        >
-          Gestisci categorie
-        </button>
-      </div>
+      <h2 className="text-lg font-bold text-[var(--text-primary)]">Transazioni</h2>
 
-      {/* Filtri */}
-      <div className="flex gap-2 flex-wrap">
+      {/* Filtri + ricerca */}
+      <div className="flex gap-2 flex-wrap items-center">
         {['all', 'expense', 'income'].map(type => (
           <button
             key={type}
@@ -80,12 +63,13 @@ export default function TransactionsPage() {
             {type === 'all' ? 'Tutti' : type === 'expense' ? 'Spese' : 'Entrate'}
           </button>
         ))}
+
         <input
           type="text"
           placeholder="Cerca..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="flex-1 min-w-[150px] bg-white/5 border border-[var(--border)] rounded-full px-4 py-1.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50"
+          className="flex-1 min-w-[120px] bg-white/5 border border-[var(--border)] rounded-full px-4 py-1.5 text-sm text-[var(--text-primary)] placeholder-[var(--text-secondary)] focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/50"
         />
       </div>
 
@@ -117,8 +101,6 @@ export default function TransactionsPage() {
           ✅ Tutte le transazioni caricate ({availableMonths.length} mesi)
         </div>
       )}
-
-      {showCategories && <CategoryManager onClose={() => setShowCategories(false)} />}
     </div>
   )
 }

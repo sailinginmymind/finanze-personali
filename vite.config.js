@@ -29,7 +29,6 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{html,js,css,woff2,png,svg,webp}'],
-        // Cache-first per asset statici con hash (JS, CSS, immagini)
         runtimeCaching: [
           {
             urlPattern: /\.(?:js|css|png|svg|webp)$/,
@@ -38,24 +37,22 @@ export default defineConfig({
               cacheName: 'static-assets',
               expiration: {
                 maxEntries: 50,
-                maxAgeSeconds: 60 * 60 * 24 * 30  // 30 giorni
+                maxAgeSeconds: 60 * 60 * 24 * 30
               }
             }
           },
           {
-            // Network-first per il documento HTML (per avere sempre l'ultima versione)
             urlPattern: /\/finanze-personali\/$/,
             handler: 'NetworkFirst',
             options: {
               cacheName: 'html-cache',
               expiration: {
                 maxEntries: 5,
-                maxAgeSeconds: 60 * 60 * 24  // 1 giorno
+                maxAgeSeconds: 60 * 60 * 24
               }
             }
           },
           {
-            // Stale-while-revalidate per i font Google
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/,
             handler: 'StaleWhileRevalidate',
             options: {
@@ -80,5 +77,45 @@ export default defineConfig({
         ]
       }
     })
-  ]
+  ],
+  
+  // 👇 OTTIMIZZAZIONI PER IL BUNDLING
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Separa React e React Router in un chunk dedicato
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          
+          // Separa Recharts (la libreria più pesante) in un chunk dedicato
+          'recharts': ['recharts'],
+          
+          // Altre librerie di terze parti
+          'vendor-other': ['uuid']
+        }
+      }
+    },
+    // Riduce la dimensione del chunk principale
+    chunkSizeWarningLimit: 1000,
+    
+    // Ottimizza il CSS
+    cssMinify: true,
+    
+    // Genera sourcemap solo in sviluppo (per ridurre il bundle in produzione)
+    sourcemap: false
+  },
+  
+  // 👇 OTTIMIZZAZIONI PER LO SVILUPPO
+  server: {
+    // Riduce il polling per migliorare le performance in dev
+    watch: {
+      usePolling: false
+    }
+  },
+  
+  // 👇 OTTIMIZZAZIONI PER LA PRODUZIONE
+  esbuild: {
+    // Rimuove i console.log in produzione
+    drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : []
+  }
 })

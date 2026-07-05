@@ -8,6 +8,7 @@ import { formatCurrency, maskCurrency, formatNumber, maskNumber } from '../utils
 import InsightsPanel from './InsightsPanel'
 import MonthlyProjection from './MonthlyProjection'
 import SavingsGoals from './SavingsGoals'
+import TransactionItem from './TransactionItem'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
   ResponsiveContainer, Cell
@@ -42,32 +43,6 @@ function CustomBarTooltip({ active, payload }) {
     )
   }
   return null
-}
-
-// Componente interno per una singola transazione (evita duplicazione)
-function TransactionItem({ transaction, categories, fmtNumber }) {
-  const catList = categories[transaction.type] || []
-  const cat = catList.find(c => c.name === transaction.category)
-  const emoji = cat?.emoji || (transaction.type === 'expense' ? '📌' : '💰')
-  const color = cat?.color || '#64748B'
-  return (
-    <div className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-white/5 transition-colors">
-      <div className="flex items-center gap-3 min-w-0">
-        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0" style={{ backgroundColor: `${color}20` }}>
-          <span>{emoji}</span>
-        </div>
-        <div className="min-w-0">
-          <p className="text-sm font-medium text-[var(--text-primary)] truncate">{transaction.note || transaction.category}</p>
-          <p className="text-[10px] text-[var(--text-secondary)]">
-            {new Date(transaction.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })} · {transaction.category}
-          </p>
-        </div>
-      </div>
-      <span className={`text-sm font-semibold ml-2 ${transaction.type === 'expense' ? 'text-[var(--danger)]' : 'text-[var(--success)]'}`}>
-        {transaction.type === 'expense' ? '-' : '+'} €{fmtNumber(transaction.amount)}
-      </span>
-    </div>
-  )
 }
 
 export default function Dashboard() {
@@ -254,27 +229,30 @@ export default function Dashboard() {
           </p>
         ) : (
           <>
-            <ResponsiveContainer width="100%" height={Math.max(currentData.length * 44, 200)}>
-              <BarChart layout="vertical" data={currentData} margin={{ left: 0, right: 20 }}>
-                <defs>
-                  {currentData.map((entry, idx) => (
-                    <linearGradient key={idx} id={`barGrad-${activeTab}-${idx}`} x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor={entry.color} stopOpacity={0.9} />
-                      <stop offset="100%" stopColor={entry.color} stopOpacity={0.4} />
-                    </linearGradient>
-                  ))}
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
-                <XAxis type="number" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <YAxis dataKey="name" type="category" tick={{ fill: 'var(--text-primary)', fontSize: 13 }} width={100} axisLine={false} tickLine={false} />
-                <Tooltip content={<CustomBarTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
-                <Bar dataKey="value" radius={[0,8,8,0]} isAnimationActive={false} barSize={24}>
-                  {currentData.map((entry, idx) => (
-                    <Cell key={idx} fill={`url(#barGrad-${activeTab}-${idx})`} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            {/* 👇 CONTENITORE GRAFICO CON min-height FISSA per ridurre CLS */}
+            <div style={{ minHeight: '240px', width: '100%' }}>
+              <ResponsiveContainer width="100%" height={Math.max(currentData.length * 44, 200)}>
+                <BarChart layout="vertical" data={currentData} margin={{ left: 0, right: 20 }}>
+                  <defs>
+                    {currentData.map((entry, idx) => (
+                      <linearGradient key={idx} id={`barGrad-${activeTab}-${idx}`} x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor={entry.color} stopOpacity={0.9} />
+                        <stop offset="100%" stopColor={entry.color} stopOpacity={0.4} />
+                      </linearGradient>
+                    ))}
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" horizontal={false} />
+                  <XAxis type="number" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
+                  <YAxis dataKey="name" type="category" tick={{ fill: 'var(--text-primary)', fontSize: 13 }} width={100} axisLine={false} tickLine={false} />
+                  <Tooltip content={<CustomBarTooltip />} cursor={{ fill: 'rgba(255,255,255,0.02)' }} />
+                  <Bar dataKey="value" radius={[0,8,8,0]} isAnimationActive={false} barSize={24}>
+                    {currentData.map((entry, idx) => (
+                      <Cell key={idx} fill={`url(#barGrad-${activeTab}-${idx})`} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
 
             {activeTab === 'expense' && monthFilter !== 'all' && (
               <div className="mt-4 space-y-2">
