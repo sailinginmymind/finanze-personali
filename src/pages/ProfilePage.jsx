@@ -3,14 +3,20 @@ import { useTransactions } from '../context/TransactionContext'
 import { useCategories } from '../context/CategoriesContext'
 import CategoryManager from '../components/CategoryManager'
 import { usePrivacy } from '../context/PrivacyContext'
+import BudgetManagerModal from '../components/BudgetManagerModal'
+import ExportModal from '../components/ExportModal'
+import FeedbackModal from '../components/FeedbackModal'
 
 export default function ProfilePage() {
   const { transactions } = useTransactions()
   const { categories } = useCategories()
   const [showCategories, setShowCategories] = useState(false)
+  const [showBudgetModal, setShowBudgetModal] = useState(false)
+  const [showExportModal, setShowExportModal] = useState(false)
+  const [showFeedbackModal, setShowFeedbackModal] = useState(false)
   const { isPrivacyEnabled, togglePrivacy } = usePrivacy()
 
-  const exportData = () => {
+  const exportJSON = () => {
     const data = { transactions, categories }
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob)
@@ -36,36 +42,117 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-lg font-bold text-[var(--text-primary)]">Profilo & Impostazioni</h2>
+    <div className="space-y-3">
+      <h2 className="text-lg font-bold text-[var(--text-primary)] mb-4">Profilo & Impostazioni</h2>
 
-      <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-5 space-y-4">
-        <button onClick={() => setShowCategories(true)} className="w-full text-left flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors">
-          <span className="font-medium text-[var(--text-primary)]">Gestione categorie</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-[var(--text-secondary)]"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
-        </button>
-        <button onClick={handleSeed} className="w-full text-left flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors">
-          <span className="font-medium text-[var(--text-primary)]">Importa dati demo</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-[var(--text-secondary)]"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" /></svg>
-        </button>
-        <button onClick={exportData} className="w-full text-left flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors">
-          <span className="font-medium text-[var(--text-primary)]">Esporta dati (JSON)</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-[var(--text-secondary)]"><path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" /></svg>
-        </button>
-        <button onClick={resetData} className="w-full text-left flex items-center justify-between p-3 rounded-xl hover:bg-white/5 transition-colors text-[var(--danger)]">
-          <span className="font-medium">Cancella tutti i dati</span>
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
-        </button>
+      {/* Card 1 – Gestione Budget */}
+      <div
+        onClick={() => setShowBudgetModal(true)}
+        className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 shadow-lg cursor-pointer hover:bg-white/5 transition-colors active:scale-[0.99] flex items-center justify-between"
+      >
+        <span className="font-medium text-[var(--text-primary)] text-sm flex items-center gap-3">
+          <span className="w-8 text-center text-base">💰</span>
+          Gestione Budget
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-[var(--text-secondary)] shrink-0">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
       </div>
 
-      {/* Blocco Privacy */}
-      <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-5 space-y-4">
-        <h3 className="text-sm font-medium text-[var(--text-primary)]">Privacy</h3>
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-[var(--text-secondary)]">Modalità privacy</span>
+      {/* Card 2 – Gestione Categorie */}
+      <div
+        onClick={() => setShowCategories(true)}
+        className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 shadow-lg cursor-pointer hover:bg-white/5 transition-colors active:scale-[0.99] flex items-center justify-between"
+      >
+        <span className="font-medium text-[var(--text-primary)] text-sm flex items-center gap-3">
+          <span className="w-8 text-center text-base">📂</span>
+          Gestione categorie
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-[var(--text-secondary)] shrink-0">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+
+      {/* Card 3 – Esporta CSV/PDF */}
+      <div
+        onClick={() => setShowExportModal(true)}
+        className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 shadow-lg cursor-pointer hover:bg-white/5 transition-colors active:scale-[0.99] flex items-center justify-between"
+      >
+        <span className="font-medium text-[var(--text-primary)] text-sm flex items-center gap-3">
+          <span className="w-8 text-center text-base">📤</span>
+          Esporta dati (CSV/PDF)
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-[var(--text-secondary)] shrink-0">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+
+      {/* Card 4 – Importa dati demo */}
+      <div
+        onClick={handleSeed}
+        className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 shadow-lg cursor-pointer hover:bg-white/5 transition-colors active:scale-[0.99] flex items-center justify-between"
+      >
+        <span className="font-medium text-[var(--text-primary)] text-sm flex items-center gap-3">
+          <span className="w-8 text-center text-base">📥</span>
+          Importa dati demo
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-[var(--text-secondary)] shrink-0">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+
+      {/* Card 5 – Esporta backup JSON */}
+      <div
+        onClick={exportJSON}
+        className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 shadow-lg cursor-pointer hover:bg-white/5 transition-colors active:scale-[0.99] flex items-center justify-between"
+      >
+        <span className="font-medium text-[var(--text-primary)] text-sm flex items-center gap-3">
+          <span className="w-8 text-center text-base">📦</span>
+          Esporta backup (JSON)
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-[var(--text-secondary)] shrink-0">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+
+      {/* Card 6 – Invia feedback (STILIZZATA e PENULTIMA) */}
+      <div
+        onClick={() => setShowFeedbackModal(true)}
+        className="bg-[var(--bg-secondary)] border-2 border-[var(--accent)]/40 rounded-2xl p-4 shadow-lg cursor-pointer hover:bg-[var(--accent)]/5 hover:border-[var(--accent)] transition-colors active:scale-[0.99] flex items-center justify-between"
+      >
+        <span className="font-medium text-[var(--text-primary)] text-sm flex items-center gap-3">
+          <span className="w-8 text-center text-base">💬</span>
+          <span className="text-[var(--accent)]">Invia feedback</span>
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-[var(--accent)] shrink-0">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+
+      {/* Card 7 – Cancella tutti i dati */}
+      <div
+        onClick={resetData}
+        className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 shadow-lg cursor-pointer hover:bg-white/5 transition-colors active:scale-[0.99] flex items-center justify-between"
+      >
+        <span className="font-medium text-sm flex items-center gap-3 text-[var(--danger)]">
+          <span className="w-8 text-center text-base">🗑️</span>
+          Cancella tutti i dati
+        </span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-[var(--danger)] shrink-0">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
+      </div>
+
+      {/* Card 8 – Privacy */}
+      <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 shadow-lg">
+        <div className="flex items-center justify-between mb-2">
+          <span className="font-medium text-[var(--text-primary)] text-sm flex items-center gap-3">
+            <span className="w-8 text-center text-base">🔒</span>
+            Privacy
+          </span>
           <button
             onClick={togglePrivacy}
-            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors shrink-0 ${
               isPrivacyEnabled ? 'bg-[var(--accent)]' : 'bg-[var(--border)]'
             }`}
           >
@@ -76,13 +163,19 @@ export default function ProfilePage() {
             />
           </button>
         </div>
-        <p className="text-xs text-[var(--text-secondary)]">
+        <p className="text-xs text-[var(--text-secondary)] ml-11">
           Quando attivo, tutti gli importi vengono sostituiti da asterischi per proteggere la tua privacy.
         </p>
       </div>
 
-      <p className="text-xs text-[var(--text-secondary)] text-center">Fin.Io v1.0</p>
+      {/* Footer */}
+      <p className="text-xs text-[var(--text-secondary)] text-center pt-2">Fin.Io v1.0</p>
+
+      {/* Modali */}
       {showCategories && <CategoryManager onClose={() => setShowCategories(false)} />}
+      {showBudgetModal && <BudgetManagerModal onClose={() => setShowBudgetModal(false)} />}
+      {showExportModal && <ExportModal onClose={() => setShowExportModal(false)} />}
+      {showFeedbackModal && <FeedbackModal onClose={() => setShowFeedbackModal(false)} />}
     </div>
   )
 }

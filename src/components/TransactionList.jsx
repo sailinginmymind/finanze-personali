@@ -43,6 +43,7 @@ export default function TransactionList({ transactions }) {
     )
   }
 
+  // Raggruppa per data (YYYY-MM-DD)
   const grouped = transactions.reduce((acc, t) => {
     const date = t.date
     if (!acc[date]) acc[date] = []
@@ -51,52 +52,68 @@ export default function TransactionList({ transactions }) {
   }, {})
   const sortedDates = Object.keys(grouped).sort((a, b) => b.localeCompare(a))
 
+  // Mese corrente per evidenziare l'intestazione
+  const today = new Date()
+  const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`
+
   return (
     <>
       <div className="space-y-4">
-        {sortedDates.map(date => (
-          <div key={date}>
-            <p className="text-xs font-semibold text-[var(--text-secondary)] mb-2 ml-2 uppercase tracking-wider">
-              {new Date(date).toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' })}
-            </p>
-            <div className="space-y-2">
-              {grouped[date].map(t => {
-                const catList = categories[t.type] || []
-                const cat = catList.find(c => c.name === t.category)
-                const emoji = cat?.emoji || (t.type === 'expense' ? '📌' : '💰')
-                const color = cat?.color || '#64748B'
-                return (
-                  <div
-                    key={t.id}
-                    className="group flex items-center justify-between bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-3 sm:p-4 hover:border-[var(--text-secondary)]/30 hover:bg-[var(--bg-secondary)]/80 transition-all duration-300 active:scale-[0.98]"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg shrink-0" style={{ backgroundColor: `${color}20` }}>
-                        <span>{emoji}</span>
+        {sortedDates.map(date => {
+          const month = date.substring(0, 7)
+          const isCurrentMonth = month === currentMonth
+          const dateObj = new Date(date)
+          const day = dateObj.getDate()
+          const monthName = dateObj.toLocaleDateString('it-IT', { month: 'short' })
+          const weekday = dateObj.toLocaleDateString('it-IT', { weekday: 'short' })
+          const year = dateObj.getFullYear()
+
+          return (
+            <div key={date}>
+              <p className={`text-xs font-semibold mb-2 ml-2 uppercase tracking-wider ${
+                isCurrentMonth ? 'text-[var(--accent)]' : 'text-[var(--text-secondary)]'
+              }`}>
+                {weekday} {day} {monthName} {year}
+              </p>
+              <div className="space-y-2">
+                {grouped[date].map(t => {
+                  const catList = categories[t.type] || []
+                  const cat = catList.find(c => c.name === t.category)
+                  const emoji = cat?.emoji || (t.type === 'expense' ? '📌' : '💰')
+                  const color = cat?.color || '#64748B'
+                  return (
+                    <div
+                      key={t.id}
+                      className="group flex items-center justify-between bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-3 sm:p-4 hover:border-[var(--text-secondary)]/30 hover:bg-[var(--bg-secondary)]/80 transition-all duration-300 active:scale-[0.98]"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg shrink-0" style={{ backgroundColor: `${color}20` }}>
+                          <span>{emoji}</span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="font-medium text-[var(--text-primary)] text-sm sm:text-base truncate">{t.note || t.category}</p>
+                          <p className="text-xs text-[var(--text-secondary)]">{t.category}</p>
+                        </div>
                       </div>
-                      <div className="min-w-0">
-                        <p className="font-medium text-[var(--text-primary)] text-sm sm:text-base truncate">{t.note || t.category}</p>
-                        <p className="text-xs text-[var(--text-secondary)]">{t.category}</p>
+                      <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                        <span className={`font-bold text-sm sm:text-base ${t.type === 'expense' ? 'text-[var(--danger)]' : 'text-[var(--success)]'}`}>
+                          {t.type === 'expense' ? '-' : '+'} €{formatNumber(t.amount)}
+                        </span>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); handleDeleteRequest(t.id); }}
+                          className="text-slate-700 hover:text-[var(--danger)] transition-colors text-lg p-2 -mr-2 sm:opacity-0 sm:group-hover:opacity-100"
+                          aria-label="Elimina"
+                        >
+                          🗑️
+                        </button>
                       </div>
                     </div>
-                    <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-                      <span className={`font-bold text-sm sm:text-base ${t.type === 'expense' ? 'text-[var(--danger)]' : 'text-[var(--success)]'}`}>
-                        {t.type === 'expense' ? '-' : '+'} €{formatNumber(t.amount)}
-                      </span>
-                      <button
-                        onClick={(e) => { e.stopPropagation(); handleDeleteRequest(t.id); }}
-                        className="text-slate-700 hover:text-[var(--danger)] transition-colors text-lg p-2 -mr-2 sm:opacity-0 sm:group-hover:opacity-100"
-                        aria-label="Elimina"
-                      >
-                        🗑️
-                      </button>
-                    </div>
-                  </div>
-                )
-              })}
+                  )
+                })}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
 
       {deleteTarget && (

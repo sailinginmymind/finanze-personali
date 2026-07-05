@@ -8,7 +8,7 @@ import { formatCurrency, maskCurrency, formatNumber, maskNumber } from '../utils
 import InsightsPanel from './InsightsPanel'
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  LineChart, Line, Legend, ResponsiveContainer, Cell
+  ResponsiveContainer, Cell
 } from 'recharts'
 
 // Icona occhio (aperto / chiuso) in stile outline
@@ -25,7 +25,7 @@ const EyeIcon = ({ closed }) => (
   </svg>
 )
 
-function CustomBarTooltip({ active, payload, label }) {
+function CustomBarTooltip({ active, payload }) {
   const { isPrivacyEnabled } = usePrivacy()
   const fmt = isPrivacyEnabled ? maskCurrency : formatCurrency
   if (active && payload && payload.length) {
@@ -40,6 +40,32 @@ function CustomBarTooltip({ active, payload, label }) {
     )
   }
   return null
+}
+
+// Componente interno per una singola transazione (evita duplicazione)
+function TransactionItem({ transaction, categories, fmtNumber }) {
+  const catList = categories[transaction.type] || []
+  const cat = catList.find(c => c.name === transaction.category)
+  const emoji = cat?.emoji || (transaction.type === 'expense' ? '📌' : '💰')
+  const color = cat?.color || '#64748B'
+  return (
+    <div className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-white/5 transition-colors">
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0" style={{ backgroundColor: `${color}20` }}>
+          <span>{emoji}</span>
+        </div>
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-[var(--text-primary)] truncate">{transaction.note || transaction.category}</p>
+          <p className="text-[10px] text-[var(--text-secondary)]">
+            {new Date(transaction.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })} · {transaction.category}
+          </p>
+        </div>
+      </div>
+      <span className={`text-sm font-semibold ml-2 ${transaction.type === 'expense' ? 'text-[var(--danger)]' : 'text-[var(--success)]'}`}>
+        {transaction.type === 'expense' ? '-' : '+'} €{fmtNumber(transaction.amount)}
+      </span>
+    </div>
+  )
 }
 
 export default function Dashboard() {
@@ -88,27 +114,21 @@ export default function Dashboard() {
       .filter(c => c.value > 0)
       .sort((a, b) => b.value - a.value)
 
-    const monthlyTrend = (() => {
-      const months = []
-      const today = new Date()
-      for (let i = 5; i >= 0; i--) {
-        const d = new Date(today.getFullYear(), today.getMonth() - i, 1)
-        const y = d.getFullYear()
-        const m = String(d.getMonth() + 1).padStart(2, '0')
-        const key = `${y}-${m}`
-        const label = d.toLocaleDateString('it-IT', { month: 'short', year: '2-digit' })
-        const monthIncome = transactions.filter(t => t.type === 'income' && t.date.startsWith(key)).reduce((s, t) => s + t.amount, 0)
-        const monthExpense = transactions.filter(t => t.type === 'expense' && t.date.startsWith(key)).reduce((s, t) => s + t.amount, 0)
-        months.push({ label, income: monthIncome, expense: monthExpense })
-      }
-      return months
-    })()
-
-    const recentTransactions = [...transactions]
+    // Ultime 5 transazioni per il mese selezionato (filteredTransactions)
+    const recentTransactions = [...filteredTransactions]
       .sort((a, b) => b.date.localeCompare(a.date))
       .slice(0, 5)
 
-    return { income, expense, balance, incomeTrend, expenseTrend, expenseByCategory, incomeByCategory, monthlyTrend, recentTransactions }
+    // Ultime 10 transazioni di TUTTO l'archivio per la vista "Tutto l'anno"
+    const allTransactions = [...transactions]
+      .sort((a, b) => b.date.localeCompare(a.date))
+      .slice(0, 10)
+
+    return { 
+      income, expense, balance, incomeTrend, expenseTrend, 
+      expenseByCategory, incomeByCategory, 
+      recentTransactions, allTransactions 
+    }
   }, [filteredTransactions, transactions, monthFilter, categories])
 
   const currentData = activeTab === 'expense' ? stats.expenseByCategory : stats.incomeByCategory
@@ -151,27 +171,29 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Insight del mese (subito sotto la card saldo) */}
-      {monthFilter !== 'all' && <InsightsPanel />}
+      {/* Insights: SEMPRE visibili (sia per mese che per anno) */}
+      <InsightsPanel isYearly={monthFilter === 'all'} />
 
-      {/* Andamento mensile (solo se "Tutti i mesi") oppure Ultime transazioni */}
+      {/* Se "Tutto l'anno" mostra le ultime transazioni, altrimenti le ultime transazioni del mese */}
       {monthFilter === 'all' ? (
         <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl p-4 sm:p-5 shadow-lg">
-          <h2 className="text-sm font-semibold mb-4 text-[var(--text-primary)]">Andamento mensile (ultimi 6 mesi)</h2>
-          {stats.monthlyTrend.length === 0 ? (
-            <p className="text-[var(--text-secondary)] text-center py-8 text-sm">Dati insufficienti</p>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-sm font-semibold text-[var(--text-primary)]">Ultime transazioni dell'anno</h2>
+            <Link
+              to="/transactions"
+              className="text-xs font-medium text-[var(--accent)] hover:text-[var(--accent-hover)] transition-colors"
+            >
+              Vedi tutte →
+            </Link>
+          </div>
+          {stats.allTransactions.length === 0 ? (
+            <p className="text-[var(--text-secondary)] text-center py-4 text-sm">Nessuna transazione</p>
           ) : (
-            <ResponsiveContainer width="100%" height={220}>
-              <LineChart data={stats.monthlyTrend} margin={{ top: 5, right: 20, left: 10, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
-                <XAxis dataKey="label" tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <YAxis tick={{ fill: 'var(--text-secondary)', fontSize: 12 }} />
-                <Tooltip formatter={(value) => fmt(value)} contentStyle={{ background: 'var(--bg-secondary)', borderRadius: '12px', border: '1px solid var(--border)', fontSize: '0.875rem' }} />
-                <Legend wrapperStyle={{ fontSize: '12px' }} />
-                <Line type="monotone" dataKey="income" name="Entrate" stroke="var(--success)" strokeWidth={2} dot={{ r: 4, fill: 'var(--success)' }} isAnimationActive={false} />
-                <Line type="monotone" dataKey="expense" name="Spese" stroke="var(--danger)" strokeWidth={2} dot={{ r: 4, fill: 'var(--danger)' }} isAnimationActive={false} />
-              </LineChart>
-            </ResponsiveContainer>
+            <div className="space-y-2">
+              {stats.allTransactions.map(t => (
+                <TransactionItem key={t.id} transaction={t} categories={categories} fmtNumber={fmtNumber} />
+              ))}
+            </div>
           )}
         </div>
       ) : (
@@ -189,30 +211,9 @@ export default function Dashboard() {
             <p className="text-[var(--text-secondary)] text-center py-4 text-sm">Nessuna transazione recente</p>
           ) : (
             <div className="space-y-2">
-              {stats.recentTransactions.map(t => {
-                const catList = categories[t.type] || []
-                const cat = catList.find(c => c.name === t.category)
-                const emoji = cat?.emoji || (t.type === 'expense' ? '📌' : '💰')
-                const color = cat?.color || '#64748B'
-                return (
-                  <div key={t.id} className="flex items-center justify-between py-2 px-3 rounded-xl hover:bg-white/5 transition-colors">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="w-8 h-8 rounded-lg flex items-center justify-center text-base shrink-0" style={{ backgroundColor: `${color}20` }}>
-                        <span>{emoji}</span>
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-sm font-medium text-[var(--text-primary)] truncate">{t.note || t.category}</p>
-                        <p className="text-[10px] text-[var(--text-secondary)]">
-                          {new Date(t.date).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })} · {t.category}
-                        </p>
-                      </div>
-                    </div>
-                    <span className={`text-sm font-semibold ml-2 ${t.type === 'expense' ? 'text-[var(--danger)]' : 'text-[var(--success)]'}`}>
-                      {t.type === 'expense' ? '-' : '+'} €{fmtNumber(t.amount)}
-                    </span>
-                  </div>
-                )
-              })}
+              {stats.recentTransactions.map(t => (
+                <TransactionItem key={t.id} transaction={t} categories={categories} fmtNumber={fmtNumber} />
+              ))}
             </div>
           )}
         </div>

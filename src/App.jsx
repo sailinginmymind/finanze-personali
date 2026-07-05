@@ -1,5 +1,5 @@
-import { useState, lazy, Suspense } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { useState, lazy, Suspense, useEffect, useRef } from 'react'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import { useTransactions } from './context/TransactionContext'
 import { seedData } from './utils/seedData'
 import Sidebar from './components/Layout/Sidebar'
@@ -9,6 +9,22 @@ import TransactionForm from './components/TransactionForm'
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
 const TransactionsPage = lazy(() => import('./pages/TransactionsPage'))
 const ProfilePage = lazy(() => import('./pages/ProfilePage'))
+
+// Componente che gestisce lo scroll all'inizio di ogni navigazione
+function ScrollToTop() {
+  const { pathname } = useLocation()
+  const mainRef = useRef(null)
+
+  useEffect(() => {
+    // Cerca il main con overflow-y-auto
+    const main = document.querySelector('main')
+    if (main) {
+      main.scrollTo(0, 0)
+    }
+  }, [pathname])
+
+  return null
+}
 
 function PageFallback() {
   return (
@@ -63,6 +79,7 @@ export default function App() {
   return (
     <div className="h-full bg-[var(--bg-primary)] text-[var(--text-primary)] font-sans flex flex-col md:flex-row">
       <Sidebar onSeed={handleSeed} />
+      <ScrollToTop /> {/* 👈 Gestisce lo scroll su ogni cambio di pagina */}
 
       <main className="flex-1 overflow-y-auto pb-20 md:pb-0 md:ml-64 safe-top">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 py-4 sm:py-6 space-y-6">

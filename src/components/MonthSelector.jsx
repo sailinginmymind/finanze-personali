@@ -1,50 +1,93 @@
 import { useMemo } from 'react'
 
 export default function MonthSelector({ value, onChange }) {
-  const months = useMemo(() => {
-    const today = new Date()
-    const list = []
-    for (let i = 11; i >= 0; i--) {
-      const d = new Date(today.getFullYear(), today.getMonth() - i, 1)
-      const year = d.getFullYear()
-      const month = String(d.getMonth() + 1).padStart(2, '0')
-      list.push({
-        value: `${year}-${month}`,
-        label: d.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })
-      })
-    }
-    return list
-  }, [])
+  // Mese corrente
+  const today = new Date()
+  const currentMonth = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}`
 
-  const currentIndex = months.findIndex(m => m.value === value)
-  const goToNext = () => {
-    if (value === 'all') onChange(months[0].value)
-    else if (currentIndex === months.length - 1) onChange('all')
-    else onChange(months[currentIndex + 1].value)
+  // Determina se siamo in modalità "Tutto l'anno"
+  const isAllMode = value === 'all'
+
+  // Calcola il mese da visualizzare
+  const displayMonth = isAllMode ? currentMonth : value
+  const [year, month] = displayMonth.split('-').map(Number)
+  const displayDate = new Date(year, month - 1, 1)
+  const displayLabel = displayDate.toLocaleDateString('it-IT', { month: 'long', year: 'numeric' })
+
+  // Verifica se il mese visualizzato è quello corrente
+  const isCurrentMonth = displayMonth === currentMonth
+
+  // Navigazione mesi (solo se non siamo in modalità "Tutto l'anno")
+  const goToMonth = (offset) => {
+    if (isAllMode) {
+      // Se siamo su "Tutto l'anno", la freccia torna al mese corrente
+      onChange(currentMonth)
+    } else {
+      const [y, m] = displayMonth.split('-').map(Number)
+      const newDate = new Date(y, m - 1 + offset, 1)
+      const newMonth = `${newDate.getFullYear()}-${String(newDate.getMonth() + 1).padStart(2, '0')}`
+      onChange(newMonth)
+    }
   }
-  const goToPrevious = () => {
-    if (value === 'all') onChange(months[months.length - 1].value)
-    else if (currentIndex === 0) onChange('all')
-    else onChange(months[currentIndex - 1].value)
+
+  // Toggle modalità "Tutto l'anno"
+  const toggleAllMode = () => {
+    if (isAllMode) {
+      onChange(currentMonth)
+    } else {
+      onChange('all')
+    }
   }
-  const label = value === 'all' ? 'Tutti i mesi' : months[currentIndex]?.label || ''
 
   return (
-    <div className="flex items-center justify-between bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl px-2 sm:px-3 py-2 shadow-lg overflow-hidden">
-      <button onClick={goToPrevious} className="flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/10 active:bg-white/15 transition-all shrink-0" aria-label="Mese precedente">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+    <div 
+      className="flex items-center justify-between bg-[var(--bg-secondary)] border border-[var(--border)] rounded-2xl px-1.5 sm:px-3 py-1.5 shadow-lg overflow-hidden w-full cursor-pointer hover:bg-[var(--bg-secondary)]/80 transition-colors"
+      onClick={toggleAllMode}
+    >
+      {/* Freccia sinistra */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          goToMonth(-1)
+        }}
+        className="flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/10 active:bg-white/15 transition-all shrink-0 cursor-pointer"
+        aria-label="Mese precedente"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
+        </svg>
       </button>
-      <div className="flex-1 flex flex-col items-center justify-center mx-1 min-w-0">
-        <button onClick={() => onChange(value === 'all' ? months[months.length - 1].value : 'all')}
-          className={`text-xs sm:text-sm font-semibold transition-all w-full truncate ${value === 'all' ? 'text-[var(--accent)] bg-[var(--accent)]/10 px-2 sm:px-4 py-1 rounded-full' : 'text-[var(--text-primary)] hover:text-[var(--accent)]'}`}>
-          {label}
-        </button>
-        {value !== 'all' && (
-          <button onClick={() => onChange('all')} className="text-[10px] sm:text-xs text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors mt-0.5">(mostra tutti)</button>
-        )}
+
+      {/* Area centrale - cliccabile tramite il div padre */}
+      <div className="flex-1 flex flex-col items-center justify-center mx-1 min-w-0 pointer-events-none">
+        <span 
+          className={`text-xs sm:text-sm font-semibold transition-all w-full truncate text-center ${
+            isAllMode
+              ? 'text-[var(--accent)]'
+              : isCurrentMonth
+                ? 'text-[var(--accent)]'  // 👈 Mese corrente in GIALLO
+                : 'text-[var(--text-primary)]'
+          }`}
+        >
+          {isAllMode ? 'Tutto l\'anno' : displayLabel}
+        </span>
+        <span className="text-[10px] sm:text-xs text-[var(--text-secondary)] transition-colors mt-0.5">
+          {isAllMode ? 'tutti i mesi dell\'anno' : '(mostra tutto l\'anno)'}
+        </span>
       </div>
-      <button onClick={goToNext} className="flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/10 active:bg-white/15 transition-all shrink-0" aria-label="Mese successivo">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" /></svg>
+
+      {/* Freccia destra */}
+      <button
+        onClick={(e) => {
+          e.stopPropagation()
+          goToMonth(1)
+        }}
+        className="flex items-center justify-center w-9 h-9 sm:w-11 sm:h-11 rounded-xl text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-white/10 active:bg-white/15 transition-all shrink-0 cursor-pointer"
+        aria-label="Mese successivo"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5 sm:w-6 sm:h-6">
+          <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
+        </svg>
       </button>
     </div>
   )
