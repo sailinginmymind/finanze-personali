@@ -4,9 +4,6 @@ export default function BottomNav({ onAdd }) {
   return (
     <nav
       className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-[var(--bg-secondary)] border-t border-[var(--border)]"
-      style={{
-        padding: '6px env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)'
-      }}
     >
       <div className="flex justify-around items-center">
         {/* Dashboard */}
