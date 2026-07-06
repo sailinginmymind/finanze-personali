@@ -1,0 +1,11 @@
+{
+  "message": "🐛 Corretto bug nell'export PDF · 🎨 Migliorata l'interfaccia profilo · ⚡ Ottimizzazioni performance",
+  "date": "2026-07-06",
+  "changes": [
+    "🐛 Corretto bug nell'export PDF (caratteri strani)",
+    "🎨 Migliorata l'interfaccia profilo con card espandibili",
+    "⚡ Ottimizzazioni performance e riduzione bundle size",
+    "📱 Aggiunto banner di installazione per PWA",
+    "🔄 Aggiunto banner di aggiornamento versione"
+  ]
+}
