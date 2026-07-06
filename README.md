@@ -1,16 +1,69 @@
-# React + Vite
+# 💰 Fin.Io – Gestione Finanze Personali
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat-square&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)](https://react.dev/)
+[![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com/)
+[![PWA](https://img.shields.io/badge/PWA-5A0FC8?style=flat-square&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)](LICENSE)
 
-Currently, two official plugins are available:
+> **Fin.Io** è un'applicazione PWA per il monitoraggio delle finanze personali.  
+> Gestisci entrate e spese, imposta budget, monitora obiettivi di risparmio e visualizza report dettagliati – tutto in un'unica interfaccia moderna e reattiva.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## 📸 Screenshot
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+> *Inserisci qui alcuni screenshot dell'app (dashboard, profilo, transazioni, export PDF).*  
+> *Puoi aggiungerli nella cartella `screenshots/` e richiamarli con `![](screenshots/dashboard.png)`*
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## ✨ Funzionalità Principali
+
+| Area | Funzionalità |
+|------|--------------|
+| **📊 Dashboard** | Riepilogo saldo, grafici entrate/spese, ultime transazioni, insights mensili/annuali, proiezione fine mese |
+| **💳 Transazioni** | Aggiunta, modifica, eliminazione, filtri per tipo e categoria, ricerca, caricamento a lotti (infinite scroll) |
+| **📂 Categorie** | Gestione personalizzata di categorie di spesa e entrata (colori, emoji, nomi) |
+| **💰 Budget** | Imposta limiti mensili per categoria, monitora il progresso con barre di avanzamento |
+| **🎯 Obiettivi** | Crea obiettivi di risparmio con scadenza, contributi mensili e monitoraggio del progresso |
+| **📤 Esportazione** | Report in CSV e PDF (con emoji, colori, totali e saldo) |
+| **🌓 Tema** | Modalità Chiara/Scura con persistenza locale |
+| **🔒 Privacy** | Toggle privacy che maschera tutti gli importi con asterischi |
+| **📱 PWA** | Installabile su mobile e desktop, funziona offline, notifiche di aggiornamento |
+| **🔐 Autenticazione** | Login/Registrazione con Supabase, sessione persistente ("Ricordami") |
+| **🔄 Aggiornamenti** | Banner di aggiornamento con changelog integrato |
+
+---
+
+## 🛠️ Tecnologie Utilizzate
+
+| Tecnologia | Descrizione |
+|------------|-------------|
+| **React 19** | Framework UI con Hooks e Context API |
+| **Vite 8** | Build tool ultra-veloce con HMR |
+| **TailwindCSS 4** | Styling utility-first e temi dinamici |
+| **Supabase** | Backend serverless (Auth, Database, Storage) |
+| **Recharts** | Grafici interattivi per dashboard |
+| **jsPDF + autoTable** | Generazione PDF con tabelle e styling |
+| **html2canvas** | Renderizzazione emoji e layout avanzati in PDF |
+| **Vite PWA** | Configurazione PWA con Service Worker e Workbox |
+| **React Router 7** | Routing lato client con lazy loading |
+| **UUID** | Generazione ID univoci per transazioni e obiettivi |
+
+---
+
+## 🚀 Demo Live
+
+👉 [**fin-io.github.io/finanze-personali/**](https://fin-io.github.io/finanze-personali/)
+
+---
+
+## 📦 Installazione e Setup
+
+### 1. Clona il repository
+
+```bash
+git clone https://github.com/tuo-username/finanze-personali.git
+cd finanze-personali
