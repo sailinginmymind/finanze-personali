@@ -12,13 +12,6 @@
 
 ---
 
-## 📸 Screenshot
-
-> *Inserisci qui alcuni screenshot dell'app (dashboard, profilo, transazioni, export PDF).*  
-> *Puoi aggiungerli nella cartella `screenshots/` e richiamarli con `![](screenshots/dashboard.png)`*
-
----
-
 ## ✨ Funzionalità Principali
 
 | Area | Funzionalità |
@@ -56,7 +49,7 @@
 
 ## 🚀 Demo Live
 
-👉 [**fin-io.github.io/finanze-personali/**](https://fin-io.github.io/finanze-personali/)
+👉 [Fin.Io](https://sailinginmymind.github.io/finanze-personali/)
 
 ---
 
