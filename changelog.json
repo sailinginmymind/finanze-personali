@@ -1,0 +1,45 @@
+[
+  {
+    "version": "1.1.1",
+    "date": "2026-07-09",
+    "title": "✨ Nuove funzionalità e miglioramenti",
+    "changes": [
+      "Aggiunte spiegazioni dettagliate sul funzionamento di: Previsione Fine Mese, Insight, Obiettivi di risparmio",
+      "Migliorata la leggibilità dei tooltip nei grafici",
+      "Corretto bug nel calcolo degli obiettivi di risparmio",
+      "Ottimizzata la gestione degli importi per evitare valori errori",
+      "Aggiunto -TransactionPattern- per suggerire automaticamente la categoria di una transazione in base alla frequenza e al nome della transazione"
+    ]
+  },
+  {
+    "version": "1.0.1",
+    "date": "2026-07-08",
+    "title": "🐛 Fix e miglioramenti",
+    "changes": [
+      "Corretto bug nell'export PDF e CSV",
+      "Migliorata e implementata l'interfaccia profilo",
+      "Ottimizzazioni performance",
+      "Aggiunto banner di installazione",
+      "Aggiunto banner di aggiornamento"
+    ]
+  },
+  {
+    "version": "1.0.0",
+    "date": "2026-07-07",
+    "title": "🚀 Prima release ufficiale",
+    "changes": [
+      "Gestione completa di entrate e spese",
+      "Dashboard con grafici e statistiche",
+      "Categorie personalizzabili",
+      "Budget mensili per categoria",
+      "Obiettivi di risparmio",
+      "Esportazione CSV e PDF",
+      "Tema chiaro/scuro",
+      "Privacy toggle, per nascondere i dati sensibili",
+      "PWA installabile",
+      "Autenticazione con Supabase",
+      "Suggerimenti intelligenti",
+      "Banner di installazione e aggiornamenti"
+    ]
+  }
+]
