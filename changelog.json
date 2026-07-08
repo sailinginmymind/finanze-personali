@@ -1,5 +1,18 @@
 [
   {
+    "version": "1.1.2",
+    "date": "2026-07-08",
+    "title": "🎨 Miglioramenti UI e ottimizzazioni",
+    "changes": [
+      "Riorganizzata la Dashboard: le 'Ultime transazioni' ora sono sopra 'Obiettivi di risparmio'",
+      "Il 'Budget mensile' è ora una card separata, con pulsante 'i' per info dettagliate",
+      "Ottimizzata la visualizzazione su mobile dei modali informativi (rispetto notch)",
+      "Uniformato lo stile dei pulsanti 'Aggiungi' in Gestione Categorie e Gestione Budget",
+      "Migliorata la sezione 'Budget mensile' con messaggio informativo quando non ci sono budget",
+      "Ridotta la dimensione del campo emoji in modifica categoria"
+    ]
+  },
+  {
     "version": "1.1.1",
     "date": "2026-07-09",
     "title": "✨ Nuove funzionalità e miglioramenti",
