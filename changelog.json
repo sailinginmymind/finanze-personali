@@ -1,7 +1,31 @@
 [
   {
+    "version": "1.1.4",
+    "date": "2026-07-11",
+    "title": "🧮 Formattazione importi e modifica transazioni",
+    "changes": [
+      "Aggiunta la possibilità di modificare le transazioni direttamente dalla lista (pulsante ✏️)",
+      "Migliorate le pagine di Login e di Registrazione",
+      "Inserita la funzionalità - Cambio Passowrd - nella pagina Profilo",
+      "Creazione del componente AmountInput per la formattazione automatica degli importi",
+      "Uniformata la formattazione degli importi in: Transazioni, Budget, Obiettivi di risparmio",
+      "Sostituiti i pulsanti di azione con un menu a tre puntini (⋮) per un'interfaccia più pulita",
+      "Risolto il problema dello zoom automatico su mobile durante l'inserimento di dati",
+      "Aggiunta selezione automatica del testo e conferma con Enter (uso Desktop) su tutti i campi input"
+    ]
+  },
+  {
+    "version": "1.1.3",
+    "date": "2026-07-10",
+    "title": "🎨 Ottimizzazioni",
+    "changes": [
+      "Correzione di un errore che faceva zoomare la pagina in alcune situazioni quando si inserivano nuove transazioni",
+      "Aggiunta la possibilità di modificare la transazione direttamente dalla lista delle transazioni"
+    ]
+  },
+  {
     "version": "1.1.2",
-    "date": "2026-07-08",
+    "date": "2026-07-09",
     "title": "🎨 Miglioramenti UI e ottimizzazioni",
     "changes": [
       "Riorganizzata la Dashboard: le 'Ultime transazioni' ora sono sopra 'Obiettivi di risparmio'",

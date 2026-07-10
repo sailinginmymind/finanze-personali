@@ -3,15 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/finanze-personali/pwa-192x192.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <!-- 👇 VIEWPORT AGGIORNATO – DISABILITA LO ZOOM SU MOBILE -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Fin.Io</title>
     <meta name="apple-mobile-web-app-title" content="Fin.Io" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <link rel="apple-touch-icon" href="/finanze-personali/pwa-192x192.png" />
 
-    <!-- ============================================================ -->
-    <!-- FONT OTTIMIZZATI – non bloccano il rendering                 -->
-    <!-- ============================================================ -->
+    <!-- FONT OTTIMIZZATI -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" />
@@ -37,7 +36,6 @@
         font-family: 'Plus Jakarta Sans', sans-serif;
       }
 
-      /* Logo F con animazione di ingresso */
       .splash-logo {
         width: 80px;
         height: 80px;
@@ -83,7 +81,6 @@
         100% { opacity: 1; transform: translateY(0); }
       }
 
-      /* Barra di caricamento con stile premium */
       .splash-progress-container {
         width: 200px;
         height: 4px;
@@ -106,14 +103,12 @@
         100% { width: 100%; }
       }
 
-      /* Stato nascosto (dopo il caricamento) */
       #splash-screen.hidden {
         opacity: 0;
         visibility: hidden;
         pointer-events: none;
       }
 
-      /* Stato nascosto immediato (se già mostrato in questa sessione) */
       #splash-screen.skip {
         opacity: 0;
         visibility: hidden;
@@ -121,7 +116,6 @@
         transition: none;
       }
 
-      /* Mobile */
       @media (max-width: 480px) {
         .splash-logo {
           width: 64px;
@@ -140,7 +134,6 @@
         }
       }
 
-      /* Desktop */
       @media (min-width: 768px) {
         .splash-logo {
           width: 100px;
@@ -156,7 +149,7 @@
         }
       }
     </style>
-    <script type="module" crossorigin src="/finanze-personali/assets/index-DaQrsMSB.js"></script>
+    <script type="module" crossorigin src="/finanze-personali/assets/index-DMNzppKj.js"></script>
     <link rel="modulepreload" crossorigin href="/finanze-personali/assets/rolldown-runtime-NMqb_1LM.js">
     <link rel="modulepreload" crossorigin href="/finanze-personali/assets/charts-vendor-DU6rdtBH.js">
     <link rel="modulepreload" crossorigin href="/finanze-personali/assets/pdf-vendor-ADxvjcl_.js">
@@ -164,7 +157,7 @@
     <link rel="modulepreload" crossorigin href="/finanze-personali/assets/supabase-vendor-D3l3QlRU.js">
     <link rel="modulepreload" crossorigin href="/finanze-personali/assets/supabase-3VtQ1vML.js">
     <link rel="modulepreload" crossorigin href="/finanze-personali/assets/utils-vendor-DNqhZIAE.js">
-    <link rel="stylesheet" crossorigin href="/finanze-personali/assets/index-CS_zPCas.css">
+    <link rel="stylesheet" crossorigin href="/finanze-personali/assets/index-C2SR2SY0.css">
   <link rel="manifest" href="/finanze-personali/manifest.webmanifest"><script id="vite-plugin-pwa:register-sw" src="/finanze-personali/registerSW.js"></script></head>
   <body>
     <!-- SPLASH SCREEN -->
@@ -180,16 +173,12 @@
     <!-- ROOT PER REACT -->
     <div id="root"></div>
 
-    <!-- SCRIPT INTELLIGENTE -->
     <script>
       (function() {
         var splash = document.getElementById('splash-screen');
         var progressBar = document.getElementById('splash-progress-bar');
-
-        // Controlla se la splash è già stata mostrata in questa sessione
         var splashShown = sessionStorage.getItem('splashShown');
 
-        // Se già mostrata, nascondi immediatamente (senza animazione)
         if (splashShown) {
           if (splash) {
             splash.classList.add('skip');
@@ -197,21 +186,16 @@
           return;
         }
 
-        // Altrimenti, mostra la splash con animazione
-        // Forza la barra al 100% dopo 2 secondi (sicurezza)
         setTimeout(function() {
           if (progressBar) {
             progressBar.style.width = '100%';
           }
         }, 3000);
 
-        // Funzione per nascondere la splash (con transizione)
         function hideSplash() {
           if (splash) {
-            // Imposta il flag per questa sessione
             sessionStorage.setItem('splashShown', 'true');
             splash.classList.add('hidden');
-            // Rimuove dal DOM dopo la transizione
             setTimeout(function() {
               if (splash.parentNode) {
                 splash.parentNode.removeChild(splash);
@@ -220,7 +204,6 @@
           }
         }
 
-        // Nasconde la splash dopo il caricamento + 2 secondi
         if (document.readyState === 'complete') {
           setTimeout(hideSplash, 2000);
         } else {
@@ -229,7 +212,6 @@
           });
         }
 
-        // Fallback: dopo 3.5 secondi forza la chiusura
         setTimeout(hideSplash, 3500);
       })();
     </script>
