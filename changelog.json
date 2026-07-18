@@ -1,4 +1,16 @@
-[
+
+  [
+  {
+    "version": "1.1.5",
+    "date": "2026-07-18",
+    "title": "✨Dashboard personalizzabile, fix abitudini di spesa e altro",
+    "changes": [
+      "Personalizzazione dell'ordine delle card in dashboard – tieni premuto per spostarle in base a ciò che ti interessa tenere sott'occhio",
+      "Sistemazione cronologica delle transazioni: ora le più recenti sono sempre in alto",
+      "Fix sulle abitudini di spesa: ora il sistema suggerisce la singola transazione ricorrente, non la media della categoria",
+      "Inserimento abbonamenti – work in progress (interfaccia base pronta)"
+    ]
+  },
   {
     "version": "1.1.4",
     "date": "2026-07-11",
