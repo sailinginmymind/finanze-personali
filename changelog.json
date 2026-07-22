@@ -1,9 +1,25 @@
-
-  [
+[
+  {
+    "version": "1.1.6",
+    "date": "2026-07-20",
+    "title": "🎯 Piani di abbonamento, import/export dati e redesign abbonamenti",
+    "changes": [
+      "Aggiunta sezione 'Piani di abbonamento' nel profilo (Free, Plus, Premium) – versione dimostrativa",
+      "Galleria orizzontale su mobile per scorrere tra i piani",
+      "Tasto 'Invita un amico' per condividere Fin.Io (con supporto nativo su mobile e copia link su desktop)",
+      "Redesign completo della sezione abbonamenti: più minimal e pulita, con emoji personalizzabili",
+      "Aggiunta importazione da file JSON (ripristino completo dei dati)",
+      "Migliorata l'esportazione JSON con nome file contenente la data",
+      "Aggiunta conferma dettagliata per azioni distruttive (cancellazione dati, import demo, import JSON)",
+      "Sistemato il padding inferiore per evitare che la BottomNav copra il footer",
+      "Migliorata l'usabilità del profilo: pulsanti 'Modifica profilo' e 'Mostra statistiche' più visibili",
+      "Mockup dei piani di abbonamento con toggle mensile/annuale e sconto del 20% sull'annuale"
+    ]
+  },
   {
     "version": "1.1.5",
     "date": "2026-07-18",
-    "title": "✨Dashboard personalizzabile, fix abitudini di spesa e altro",
+    "title": "✨ Dashboard personalizzabile, fix abitudini di spesa e altro",
     "changes": [
       "Personalizzazione dell'ordine delle card in dashboard – tieni premuto per spostarle in base a ciò che ti interessa tenere sott'occhio",
       "Sistemazione cronologica delle transazioni: ora le più recenti sono sempre in alto",
