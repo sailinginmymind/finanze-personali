@@ -1,5 +1,18 @@
 [
   {
+    "version": "1.1.8",
+    "date": "2026-08-03",
+    "title": "💰 Saldo cumulativo, modalità Offline e Pull-to-Refresh",
+    "changes": [
+      "💾 Saldo cumulativo in tutta l'app: la logica finanziaria è stata completamente rivista. Il saldo ora si trascina da un mese all'altro in modo coerente su Dashboard, Analisi e Transazioni, evitando il ripartire da 0 a inizio mese.",
+      "📶 Modalità Offline completa: l'app funziona perfettamente senza connessione grazie al salvataggio dei dati in cache (localStorage). Le transazioni aggiunte offline vengono accodate e sincronizzate automaticamente su Supabase non appena la connessione torna attiva.",
+      "📱 Pull-to-Refresh intelligente: sulla Dashboard è stato aggiunto il gesto 'Pull to Refresh'. L'animazione è sempre visibile per dare feedback, ma una logica di debounce (10 secondi) impedisce di sovraccaricare Supabase con chiamate inutili.",
+      "🔍 Ricerca intelligente nelle transazioni: la barra di ricerca ora scansiona automaticamente tutta la cronologia (non solo il mese caricato). I risultati vengono trovati anche se vecchi di mesi, con messaggi più chiari in caso di assenza di risultati.",
+      "🧠 Miglioramento del pannello 'Attività usuali': risolto il bug che generava importi 'NaN' nei suggerimenti. Il sistema riconosce ora con precisione i pattern ricorrenti, compreso il giorno specifico della settimana (es. parcheggio del Venerdì), e suggerisce l'importo esatto della singola transazione.",
+      "🚀 Performance e UI su mobile: rimosse le animazioni di ingresso dai grafici e gli scroll verticali interni per una navigazione più fluida. Nel modale 'Modifica profilo', è stato rimosso l'autoFocus per evitare l'apertura automatica della tastiera."
+    ]
+  },
+  {
     "version": "1.1.7",
     "date": "2026-07-30",
     "title": "📊 Filtri avanzati transazioni e nuovi grafici",
@@ -7,7 +20,8 @@
       "Transaction list: adesso mostra il riepilogo dei totali (entrate, uscite e saldo) in base a ciò che viene cercato o filtrato",
       "Aggiunta la possibilità di filtrare le transazioni per periodo (ultimo mese, ultimi 3/6/12 mesi o mese specifico) direttamente dalla lista",
       "Inserimento di nuovi grafici e approfondimenti nell'Analisi Dettagliata (es. tasso di risparmio e andamento temporale)"
-    ]},
+    ]
+  },
   {
     "version": "1.1.6",
     "date": "2026-07-20",
