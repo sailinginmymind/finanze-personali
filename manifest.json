@@ -1,0 +1,44 @@
+{
+  "name": "Fin.Io",
+  "short_name": "Fin.Io",
+  "description": "La tua app per gestire le finanze personali",
+  "start_url": "/finanze-personali/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#f97316",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Transazioni",
+      "short_name": "Transazioni",
+      "description": "Aggiungi o modifica le tue transazioni",
+      "url": "/finanze-personali/transactions",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Analisi",
+      "short_name": "Analisi",
+      "description": "Visualizza i tuoi grafici e report finanziari",
+      "url": "/finanze-personali/analytics",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    },
+    {
+      "name": "Profilo",
+      "short_name": "Profilo",
+      "description": "Gestisci il tuo account e le impostazioni",
+      "url": "/finanze-personali/profile",
+      "icons": [{ "src": "icon-192.png", "sizes": "192x192", "type": "image/png" }]
+    }
+  ]
+}
