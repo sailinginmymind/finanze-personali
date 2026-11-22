@@ -1,5 +1,19 @@
 [
   {
+    "version": "1.1.11",
+    "date": "2026-11-22",
+    "title": "🧠 Nuova Analisi Dettagliata: Insights, Heatmap, Tab Abitudini & Trend",
+    "changes": [
+      "🧠 Sezione Abitudini & Pattern: aggiunte nuove metriche comportamentali tra cui la Heatmap del mese cliccabile (con modale per il dettaglio delle spese del singolo giorno), spesa aggregata per giorno della settimana (ultimi 3 mesi), confronto tra spese ricorrenti vs una tantum e distribuzione delle spese per fasce di importo (<10€, 10-50€, ecc.)",
+      "📐 Regola 50/30/20: aggiunto il calcolo automatico dello scostamento percentuale rispetto ai target di Bisogni (50%), Desideri (30%) e Risparmio (20%)",
+      "📈 Tab Trend & Anno su Anno (YoY): nuova vista temporale a 12 mesi con grafico dell'andamento (entrate, uscite, saldo cumulativo e media mobile a 3 mesi delle spese) e confronto diretto Anno su Anno con lo stesso mese dell'anno precedente",
+      "🏷️ Top note, merchant e spese singole: aggiunte la classifica delle 10 descrizioni di spesa più pesanti (con numero di occorrenze), l'indicatore di concentrazione nelle prime 3 categorie e la top 5 delle spese singole più elevate del periodo",
+      "🎯 Budget vs Actual e Rapporto di risparmio: visualizzazione dell'avanzamento dei budget impostati con importo residuo o sforamento, e grafico dell'evoluzione del tasso di risparmio mensile (min, media e max)",
+      "💡 Sistema informativo integrato (InfoSystem): introduzione dei pulsanti 'i' e modali esplicativi con supporto alla formattazione inline per comprendere al meglio grafici, metriche e suggerimenti",
+      "✏️ Modifica rapida dalla Dashboard: aggiunto il supporto alla modifica rapida di qualsiasi transazione direttamente dai riquadri delle ultime transazioni in Dashboard"
+    ]
+  },
+  {
     "version": "1.1.10",
     "date": "2026-11-18",
     "title": "📊 Drill-down categorie, fix mobile modali e fix eliminazione transazioni",
