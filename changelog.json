@@ -1,5 +1,17 @@
 [
   {
+  "version": "1.1.12",
+  "date": "2026-11-24",
+  "title": "🎯 Gestione completa di Abbonamenti, Categorie e Budget",
+  "changes": [
+    "🔄 Abbonamenti: migliorata la gestione con possibilità di inserire e modificare gli abbonamenti esistenti",
+    "🟢 Abbonamenti: aggiunta la possibilità di attivare e disattivare gli abbonamenti senza eliminarli",
+    "🏷️ Categorie e Budget: migliorata la gestione delle categorie e la creazione di budget personalizzati per categoria",
+    "📈 Budget: aggiunto il monitoraggio delle spese rispetto agli importi previsti",
+    "📅 Budget: possibilità di consultare e monitorare i budget mese per mese oppure sull’intero anno"
+  ]
+},
+  {
     "version": "1.1.11",
     "date": "2026-11-22",
     "title": "🧠 Nuova Analisi Dettagliata: Insights, Heatmap, Tab Abitudini & Trend",
